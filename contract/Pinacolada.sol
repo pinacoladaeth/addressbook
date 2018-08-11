@@ -4,7 +4,6 @@ import "./ENS.sol";
 import "./TemporaryHashRegistrar.sol"; 
 import "./PublicResolver.sol"; 
 import "./ReverseRegistrar.sol"; 
-import "./strings.sol";
 
 contract Pinacolada {
   ENS public registry;
