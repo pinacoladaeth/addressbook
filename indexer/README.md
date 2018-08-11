@@ -1,10 +1,49 @@
-### PinacoladaETH / Indexer
+# PinacoladaETH / Indexer
 
 This package watches the pinacoladaeth contract for events and indexes it in a local json file.
 
 The settings are stored in `config.ini` (you will need to rename `config.ini.example` to `config.ini`)
 
-### Example config
+## Files
+
+* `archive.js` - this script watches the contract for events and archives them
+* `app.js` - this script is an api for the frontend to communicate with
+
+## API
+
+The API has 2 endpoints;
+
+### `GET /user/<address>/following`
+
+This returns a JSON object containing an array of addresses the user is following. If the user
+is not following anyone, the array will be empty.
+
+Example output: 
+
+```json
+{
+    "following": [
+        " 0x07Cff6218249a2351A174Bdc1E5b1632e8e4E673"
+    ]
+}
+```
+
+### `GET /user/<address>/followers`
+
+This returns a JSON object containing an array of addresses that are following the user. If the user
+is not being followed by anyone, the array will be empty.
+
+Example output: 
+
+```json
+{
+    "followers": [
+        " 0x07Cff6218249a2351A174Bdc1E5b1632e8e4E673"
+    ]
+}
+```
+
+## Example config
 
 ```ini
 ; This is the contract settings.
