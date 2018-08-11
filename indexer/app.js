@@ -67,17 +67,12 @@ fs.ensureFile(objConfig.storage.path, err => {
                   ]
                 };
               }
-            });
-            
-            fs.writeJsonSync(objConfig.storage.path, objCacheData, err => {
-              if (err) {
-                log(chalk.red("ERROR:") + " an error occurred when writing to the storage file\r\n"+err);
-              }
-            
-              log(chalk.green("SUCCESS:") + " archived event "+ objEvent.transactionHash);
-            }); 
-        });
+             });
 
+              const newConnection = Object.keys(objCacheData.events.Connection)
+              .reduce((acc, key) => {acc[key] = objCacheData.events.Connection[key].connections; return acc}, {})
+             return fs.writeJson(objConfig.storage.path, {last_block: objCacheData.last_block, events: newConnection});
+        }).catch(console.log);
       }, 5000);
   }
-})
+});
