@@ -24,7 +24,7 @@
 
 <div class="tabs is-right">
     <ul>
-        <li class="is-active" data="registrationSection"><a>Registration</a></li>
+        <li class="is-active" data="registrationSection"><a>Login</a></li>
         <li data="addressbookSection"><a>Address Book</a></li>
         <li data="profileSection"><a>Profile</a></li>
         <li data="aboutSection"><a>About</a></li>
@@ -33,11 +33,11 @@
 
 <section id="registrationSection" class="section">
     <div class="columns">
-        <div class="column is-one-quarter"></div>
+        <div class="column is-one-quarter is-hidden-touch"></div>
         <div class="column">
             <div class="container has-text-centered w-100">
                 <h1 class="title">
-                    Registration
+                    Login
                 </h1>
                 <h2 class="subtitle">
                     <span class="icon"><i class="fas fa-rocket"></i></span> We're getting you on board <span
@@ -60,7 +60,7 @@
                     <div class="field is-right">
                         <div class="control pp-1 has-text-centered">
                             <a id="registerButton" class="button is-info is-medium">
-                                <span class="text">Register</span>
+                                <span class="text">Enter</span>
                                 <span class="icon"><i class="fas fa-chevron-right"></i></span>
                             </a>
                         </div>
@@ -70,13 +70,13 @@
                 </form>
             </div>
         </div>
-        <div class="column is-one-quarter"></div>
+        <div class="column is-one-quarter is-hidden-touch"></div>
     </div>
 </section>
 
 <section id="addressbookSection" class="section">
     <div class="columns">
-        <div class="column is-one-quarter"></div>
+        <div class="column is-one-quarter is-hidden-touch"></div>
         <div class="column">
             <div class="container has-text-centered w-100">
                 <h1 class="title">
@@ -97,36 +97,18 @@
                     </p>
                 </div>
 
-                <div class="card">
-                    <div class="card-content">
-                        <div class="media">
-                            <div class="media-left">
-                                <figure class="image is-48x48">
-                                    <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
-                                </figure>
-                            </div>
-                            <div class="media-content">
-                                <p class="title is-4">vitalik.eth</p>
-                                <p class="subtitle is-6">0x70cd64a912ce15728a1136882637b4c2ba0d5d86</p>
-                            </div>
-                        </div>
-
-                        <div class="content">
-                            Twitter <a>@VitalikButerin</a> - Github <a>vbuterin</a> - Website <a>vitalik.ca</a>
-                            <br>
-                            <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
-                        </div>
-                    </div>
+                <div class="cards">
+                    <!-- Include with javascript -->
                 </div>
             </div>
         </div>
-        <div class="column is-one-quarter"></div>
+        <div class="column is-one-quarter is-hidden-touch"></div>
     </div>
 </section>
 
 <section id="profileSection" class="section">
     <div class="columns">
-        <div class="column is-one-quarter"></div>
+        <div class="column is-one-quarter is-hidden-touch"></div>
         <div class="column">
             <div class="container has-text-centered w-100">
                 <h1 class="title">
@@ -139,7 +121,7 @@
             </div>
 
             <div class="container w-100 mt-2">
-                <div class="card">
+                <div class="card" id="consultProfileCard">
                     <div class="card-content">
                         <div class="media">
                             <div class="media-left">
@@ -151,15 +133,84 @@
                                 <p class="title is-4">Vitalik</p>
                                 <p class="subtitle is-6">0x70cd64a912ce15728a1136882637b4c2ba0d5d86</p>
                             </div>
+
+                            <div class="media-right">
+                                <a id="editProfileButton"><span class="icon"><i class="fas fa-edit"></i></span></a>
+                            </div>
                         </div>
 
                         <div class="content">
                             <span class="icon"><i class="fab fa-twitter"></i></span>Twitter: <a>@vitalik</a> <br/>
                             <span class="icon"><i class="fab fa-github"></i></span>Github: <a>vitalik</a> <br/>
-                            <span class="icon"><i class="fas fa-globe-americas"></i></span>Website: <a>vitalik.ca</a> <br/>
+                            <span class="icon"><i class="fas fa-globe-americas"></i></span>Website: <a>vitalik.ca</a><br/>
+                            <br/>
                             <time datetime="2016-1-1">Last update - 11:09 PM - 1 Jan 2016</time>
                         </div>
                     </div>
+                </div>
+
+                <div class="card is-hidden" id="editProfileCard">
+                    <form class="card-content">
+                        <div class="media">
+                            <div class="media-left">
+                                <figure class="image is-48x48">
+                                    <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                                </figure>
+                            </div>
+                            <div class="media-content">
+                                <div class="field">
+                                    <div class="control">
+                                        <input class="input is-medium" type="text" placeholder="Text input" value="Another Vitalik">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="control">
+                                        <input class="input" type="text" placeholder="Text input" value="0x70cd64a912ce15728a1136882637b4c2ba0d5d86">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="media-right">
+                                <a id="cancelEditProfileButton"><span class="icon"><i class="fas fa-times"></i></span></a>
+                            </div>
+                        </div>
+
+                        <div class="content mt-1">
+                            <div class="field has-addons m-0">
+                                <p class="control">
+                                    <a class="button is-static">Twitter</a>
+                                </p>
+                                <p class="control is-expanded">
+                                    <input class="input" type="text" value="@VitalikButerin">
+                                </p>
+                            </div>
+                            <div class="field has-addons m-0">
+                                <p class="control">
+                                    <a class="button is-static">Github</a>
+                                </p>
+                                <p class="control is-expanded">
+                                    <input class="input" type="text" value="vitalik">
+                                </p>
+                            </div>
+                            <div class="field has-addons m-0">
+                                <p class="control">
+                                    <a class="button is-static">Website</a>
+                                </p>
+                                <p class="control is-expanded">
+                                    <input class="input" type="text" value="vitalik.ca">
+                                </p>
+                            </div>
+
+                            <div class="field is-right">
+                                <div class="control has-text-centered">
+                                    <a id="confirmEditButton" class="button is-info">
+                                        <span class="text">Confirm</span>
+                                        <span class="icon"><i class="fas fa-check"></i></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -174,7 +225,8 @@
                                 <div class="media">
                                     <div class="media-left">
                                         <figure class="image is-48x48 m-0">
-                                            <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                                            <img src="https://bulma.io/images/placeholders/96x96.png"
+                                                 alt="Placeholder image">
                                         </figure>
                                     </div>
                                     <div class="media-content">
@@ -196,7 +248,8 @@
                                 <div class="media">
                                     <div class="media-left">
                                         <figure class="image is-48x48 m-0">
-                                            <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                                            <img src="https://bulma.io/images/placeholders/96x96.png"
+                                                 alt="Placeholder image">
                                         </figure>
                                     </div>
                                     <div class="media-content">
@@ -207,7 +260,8 @@
                                 <div class="media">
                                     <div class="media-left">
                                         <figure class="image is-48x48 m-0">
-                                            <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                                            <img src="https://bulma.io/images/placeholders/96x96.png"
+                                                 alt="Placeholder image">
                                         </figure>
                                     </div>
                                     <div class="media-content">
@@ -221,14 +275,14 @@
                 </div>
             </div>
         </div>
-        <div class="column is-one-quarter"></div>
+        <div class="column is-one-quarter is-hidden-touch"></div>
     </div>
 </section>
 
 
 <section id="aboutSection" class="section">
     <div class="columns">
-        <div class="column is-one-quarter"></div>
+        <div class="column is-one-quarter is-hidden-touch"></div>
         <div class="column">
             <div class="container has-text-centered w-100">
                 <h1 class="title">
@@ -246,7 +300,7 @@
                 </p>
             </div>
         </div>
-        <div class="column is-one-quarter"></div>
+        <div class="column is-one-quarter is-hidden-touch"></div>
     </div>
 </section>
 
