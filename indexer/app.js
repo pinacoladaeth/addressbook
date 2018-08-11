@@ -2,83 +2,56 @@
 
 const fs = require('fs-extra');
 const ini = require('ini');
-const web3 = require('web3');
-const chalk = require('chalk');
-const log = console.log;
-
+const server = require('server');
+const { get, post } = server.router;
+ 
 let objConfig = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
-let objProvider;
-if(objConfig.web3.provider_type === 'http') {
-  objProvider = new web3.providers.HttpProvider(objConfig.web3.provider);
-} else {
-  objProvider = new web3.providers.WebsocketProvider(objConfig.web3.provider);
-}
-let objWeb3 = new web3(objProvider);
 
-// Ensure the storage path exists and if not, create it
-fs.ensureFile(objConfig.storage.path, err => {
-  if(err !== undefined) {
-    log(chalk.red("WARNING:") + " An error occurred when create the storage file!\r\n"+ err);
-    process.exit(1);
-  } else {
-    // Now start getting ready to watch for the events...
-    log(chalk.blue("INFO:") + " Watching for events on address "+ objConfig.contract.address);
+// Launch server with options and a couple of routes
+server({ port: 8080 }, [
+  get('/user/:address/followers', ctx => {
+    // Gets the user followers
+    let strData = fs.readFileSync(objConfig.storage.path);
 
-    let objContract = new objWeb3.eth.Contract(objConfig.contract.abi, objConfig.contract.address);
+    if(strData.length === 0) {
+        return {
+            "followers":[]
+        };
+    }
 
-    // We need to see if we should start from birth block or continue from where we last indexed...
-    let intStartBlock = objConfig.contract.birth_block;
-    let strCache = fs.readFileSync(objConfig.storage.path);
-    let objCacheData;
-    if(strCache.length) {
-      objCacheData = JSON.parse(strCache);
-      if(objCacheData.hasOwnProperty("last_block")) {
-        intStartBlock = objCacheData.last_block > 0 ? objCacheData.last_block : objConfig.contract.birth_block;
-      }
-    } else {
-      objCacheData = {
-        "last_block": objConfig.contract.birth_block,
-        "events": {
-          "Connection": {}
+    let objCacheData = JSON.parse(strData);
+    let arrFollowers = [];
+    for (var key in objCacheData.events.Connection) {
+        if (objCacheData.events.Connection.hasOwnProperty(key)) {
+            if(objCacheData.events.Connection[key][0] === ctx.params.address) {
+                arrFollowers.push(key);
+            }
         }
-      };      
-      intStartBlock = objCacheData.last_block;
-      }
+    }
 
-    log(chalk.blue("INFO:") + " Starting to watch from block "+ intStartBlock);
+    return {
+        "followers": arrFollowers
+    };
+  }),
+  get('/user/:address/following', ctx => {
+    // Gets the addresses the user is following
+    let strData = fs.readFileSync(objConfig.storage.path);
 
-    // Let's watch...
-    setInterval(() => {
-      objContract.getPastEvents(
-        'Connection',
-        {
-          fromBlock: intStartBlock
-        })
-        .then(function(events){
-            log(chalk.blue("INFO: ") + events.length +" events found.");
-            
-            // @todo - update the last_block in the cache file so we don't check already checked blocks
+    if(strData.length === 0) {
+        return {
+            "following":[]
+        };
+    }
 
-            events.forEach(objEvent => {
-              if(objEvent.returnValues["from"] in objCacheData.events.Connection) {
-                if(objEvent.returnValues["to"] in objCacheData.events.Connection[objEvent.returnValues["from"]]) {
-                  objCacheData.events.Connection[objEvent.returnValues["from"]].connections.push(objEvent.returnValues["to"]);
-                  log(chalk.green("SUCCESS:") + " Archived event "+ objEvent.transactionHash);
-                }
-              } else {
-                objCacheData.events.Connection[objEvent.returnValues["from"]] = {
-                  "connections": [
-                    objEvent.returnValues["to"]
-                  ]
-                };
-                log(chalk.green("SUCCESS:") + " Archived event "+ objEvent.transactionHash);
-              }
-             });
+    let objCacheData = JSON.parse(strData);
+    if(ctx.params.address in objCacheData.events.Connection) {
+        return {
+            "following": objCacheData.events.Connection[ctx.params.address]
+        };
+    }
 
-            const newConnection = Object.keys(objCacheData.events.Connection)
-              .reduce((acc, key) => {acc[key] = objCacheData.events.Connection[key].connections; return acc}, {})
-            return fs.writeJson(objConfig.storage.path, {last_block: objCacheData.last_block, events: {Connection: newConnection}});
-        }).catch(console.log);
-      }, 5000);
-  }
-});
+    return {
+        "following":[]
+    };
+  }),
+]);
