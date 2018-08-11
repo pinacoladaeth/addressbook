@@ -5,14 +5,12 @@ import "./TemporaryHashRegistrar.sol";
 import "./PublicResolver.sol"; 
 import "./ReverseRegistrar.sol"; 
 
-contract ESENSFactory {
+contract Pinacolada {
   ENS public registry;
   Registrar public registrar;
   PublicResolver public resolver;
   ReverseRegistrar public reverseRegistrar;
 
-  uint public network_id;
-  
   constructor (address registryA, address registrarA, address resolverA, address reverseRegistrarA) public{
     registry = ENS(registryA);
     registrar = Registrar(registrarA);
