@@ -1,0 +1,256 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PinacoladaΞth</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+    <link rel="stylesheet" href="index.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>
+</head>
+
+<body>
+<section class="hero is-info">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title">
+                PinacoladaΞth
+            </h1>
+            <h2 class="subtitle">
+                Grab a <span class="icon"><i class="fas fa-glass-martini-alt"></i></span> and relax
+            </h2>
+        </div>
+    </div>
+</section>
+
+<div class="tabs is-right">
+    <ul>
+        <li class="is-active" data="registrationSection"><a>Registration</a></li>
+        <li data="addressbookSection"><a>Address Book</a></li>
+        <li data="profileSection"><a>Profile</a></li>
+        <li data="aboutSection"><a>About</a></li>
+    </ul>
+</div>
+
+<section id="registrationSection" class="section">
+    <div class="columns">
+        <div class="column is-one-quarter"></div>
+        <div class="column">
+            <div class="container has-text-centered w-100">
+                <h1 class="title">
+                    Registration
+                </h1>
+                <h2 class="subtitle">
+                    <span class="icon"><i class="fas fa-rocket"></i></span> We're getting you on board <span
+                        class="icon"><i class="fas fa-rocket"></i></span>
+                </h2>
+            </div>
+
+            <div class="container w-100 mt-2">
+                <form onsubmit="return false;">
+                    <div class="field">
+                        <label class="label is-medium">Your ens domain</label>
+                        <div class="control has-icons-left">
+                            <input class="input is-medium" type="text" placeholder="vitalik.eth" pattern=".*\.eth">
+                            <span class="icon is-medium is-left">
+                        <i class="fas fa-user"></i>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="field is-right">
+                        <div class="control pp-1 has-text-centered">
+                            <a id="registerButton" class="button is-info is-medium">
+                                <span class="text">Register</span>
+                                <span class="icon"><i class="fas fa-chevron-right"></i></span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <input type="submit" class="is-hidden">
+                </form>
+            </div>
+        </div>
+        <div class="column is-one-quarter"></div>
+    </div>
+</section>
+
+<section id="addressbookSection" class="section">
+    <div class="columns">
+        <div class="column is-one-quarter"></div>
+        <div class="column">
+            <div class="container has-text-centered w-100">
+                <h1 class="title">
+                    Address book
+                </h1>
+                <h2 class="subtitle">
+                    Let's connect with the one you <span class="icon"><i class="fas fa-heart"></i></span>
+                </h2>
+            </div>
+
+            <div class="container w-100 mt-2">
+                <div class="field">
+                    <p class="control has-icons-right">
+                        <input class="input is-medium" type="text" placeholder="Search ..." id="addressbookSearch">
+                        <span class="icon is-medium is-right">
+                          <i class="fas fa-search"></i>
+                        </span>
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-left">
+                                <figure class="image is-48x48">
+                                    <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                                </figure>
+                            </div>
+                            <div class="media-content">
+                                <p class="title is-4">vitalik.eth</p>
+                                <p class="subtitle is-6">0x70cd64a912ce15728a1136882637b4c2ba0d5d86</p>
+                            </div>
+                        </div>
+
+                        <div class="content">
+                            Twitter <a>@VitalikButerin</a> - Github <a>vbuterin</a> - Website <a>vitalik.ca</a>
+                            <br>
+                            <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="column is-one-quarter"></div>
+    </div>
+</section>
+
+<section id="profileSection" class="section">
+    <div class="columns">
+        <div class="column is-one-quarter"></div>
+        <div class="column">
+            <div class="container has-text-centered w-100">
+                <h1 class="title">
+                    Profile
+                </h1>
+                <h2 class="subtitle">
+                    <span class="icon"><i class="fas fa-user-circle"></i></span> It's always been about you <span
+                        class="icon"><i class="fas fa-user-circle"></i></span>
+                </h2>
+            </div>
+
+            <div class="container w-100 mt-2">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-left">
+                                <figure class="image is-48x48">
+                                    <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                                </figure>
+                            </div>
+                            <div class="media-content">
+                                <p class="title is-4">Vitalik</p>
+                                <p class="subtitle is-6">0x70cd64a912ce15728a1136882637b4c2ba0d5d86</p>
+                            </div>
+                        </div>
+
+                        <div class="content">
+                            <span class="icon"><i class="fab fa-twitter"></i></span>Twitter: <a>@vitalik</a> <br/>
+                            <span class="icon"><i class="fab fa-github"></i></span>Github: <a>vitalik</a> <br/>
+                            <span class="icon"><i class="fas fa-globe-americas"></i></span>Website: <a>vitalik.ca</a> <br/>
+                            <time datetime="2016-1-1">Last update - 11:09 PM - 1 Jan 2016</time>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="columns mt-1">
+                <div class="column">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="title is-4">Following (2000)</div>
+                            </div>
+                            <div class="content">
+                                <div class="media">
+                                    <div class="media-left">
+                                        <figure class="image is-48x48 m-0">
+                                            <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                                        </figure>
+                                    </div>
+                                    <div class="media-content">
+                                        <p class="title is-6">thibault.luxe</p>
+                                        <p class="subtitle is-6">0x70cd...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="title is-4">Followers (2)</div>
+                            </div>
+                            <div class="content">
+                                <div class="media">
+                                    <div class="media-left">
+                                        <figure class="image is-48x48 m-0">
+                                            <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                                        </figure>
+                                    </div>
+                                    <div class="media-content">
+                                        <p class="title is-6">thibault.luxe</p>
+                                        <p class="subtitle is-6">0x70cd...</p>
+                                    </div>
+                                </div>
+                                <div class="media">
+                                    <div class="media-left">
+                                        <figure class="image is-48x48 m-0">
+                                            <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                                        </figure>
+                                    </div>
+                                    <div class="media-content">
+                                        <p class="title is-6">thibault.luxe</p>
+                                        <p class="subtitle is-6">0x70cd...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="column is-one-quarter"></div>
+    </div>
+</section>
+
+
+<section id="aboutSection" class="section">
+    <div class="columns">
+        <div class="column is-one-quarter"></div>
+        <div class="column">
+            <div class="container has-text-centered w-100">
+                <h1 class="title">
+                    About
+                </h1>
+                <h2 class="subtitle">
+                    <span class="icon"><i class="fas fa-handshake"></i></span> It's always been about you <span
+                        class="icon"><i class="fas fa-handshake"></i></span>
+                </h2>
+            </div>
+
+            <div class="container w-100 mt-2">
+                <p class="text">
+                    Infos about us, Ethereum, ENS
+                </p>
+            </div>
+        </div>
+        <div class="column is-one-quarter"></div>
+    </div>
+</section>
+
+</body>
+
+<script src="build/bundle.js"></script>
+</html>
