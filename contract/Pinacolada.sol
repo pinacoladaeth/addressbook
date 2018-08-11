@@ -11,24 +11,28 @@ contract Pinacolada {
   Registrar public registrar;
   PublicResolver public resolver;
   ReverseRegistrar public reverseRegistrar;
-  mapping (address => address[]) public graph;
+  
+  mapping (address => address[]) public addrGraph;
   event Connection (address from, address to);
+ 
 
 
-//   function Pinacolada (address registryA, address registrarA, address resolverA, address reverseRegistrarA) public{
-//     registry = ENS(registryA);
-//     registrar = Registrar(registrarA);
-//     resolver = PublicResolver(resolverA);
-//     reverseRegistrar = ReverseRegistrar(reverseRegistrarA);
-//   }
+  function Pinacolada (address registryA, address registrarA, address resolverA, address reverseRegistrarA) public{
+    registry = ENS(registryA);
+    registrar = Registrar(registrarA);
+    resolver = PublicResolver(resolverA);
+    reverseRegistrar = ReverseRegistrar(reverseRegistrarA);
+  }
   
 
-    function registerFriend(address _friend) public {
-        graph[msg.sender].push(_friend);
-        Connection(msg.sender, _friend);
+    function registerFriend( bytes32 _friendNameHash, address _friendAddr) public {
+        address friendAddr = resolver.addr(_friendNameHash);
+        if(friendAddr!=_friendAddr) revert();
+        addrGraph[msg.sender].push(_friendAddr);
+        Connection(msg.sender, _friendAddr);
     }
     
     function isMember(address _person) public view returns (bool) {
-        return graph[_person].length != 0;
+        return addrGraph[_person].length != 0;
     }
 }
