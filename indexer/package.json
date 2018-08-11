@@ -1,0 +1,23 @@
+{
+  "name": "pinacoladaeth-indexer",
+  "version": "1.0.0",
+  "description": "Watches the ethereum contract and indexes the events to a local file",
+  "main": "app.js",
+  "dependencies": {
+    "web3": "^1.0.0-beta.35"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pinacoladaeth/addressbook.git"
+  },
+  "author": "pinacoladaeth",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pinacoladaeth/addressbook/issues"
+  },
+  "homepage": "https://github.com/pinacoladaeth/addressbook#readme"
+}
