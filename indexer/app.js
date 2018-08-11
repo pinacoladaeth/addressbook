@@ -39,7 +39,7 @@ fs.ensureFile(objConfig.storage.path, err => {
       objCacheData = {
         "last_block": objConfig.contract.birth_block,
         "events": {
-          "register": []
+          "Connection": []
         }
       };      
       intStartBlock = objCacheData.last_block;
@@ -50,7 +50,7 @@ fs.ensureFile(objConfig.storage.path, err => {
     // Let's watch...
     setInterval(() => {
       objContract.getPastEvents(
-        'allEvents',
+        'Connection',
         {
           fromBlock: intStartBlock
         })
@@ -58,26 +58,26 @@ fs.ensureFile(objConfig.storage.path, err => {
             log(chalk.blue("INFO: ") + events.length +" events found.");
             
             events.forEach(objEvent => {
-              //@todo - change this for the events of pinacolada
-              if(objCacheData.events.register[objEvent.returnValues["node"]]) {
-                objCacheData.events.register[objEvent.returnValues["node"]].owner = objEvent.returnValues["owner"];
+              if(objCacheData.events.Connection[objEvent.returnValues["from"]]) {
+                objCacheData.events.Connection[objEvent.returnValues["from"]].connections.push(objEvent.returnValues["to"]);
               } else {
-                objCacheData.events.register[objEvent.returnValues["node"]] = {
-                  "owner": objEvent.returnValues["owner"]
+                objCacheData.events.Connection[objEvent.returnValues["from"]] = {
+                  "connections": [
+                    objEvent.returnValues["to"]
+                  ]
                 };
-
-                fs.writeJson(objConfig.storage.path, objCacheData, err => {
-
-                  if (err) {
-                    log(chalk.red("ERROR:") + " an error occurred when writing to the storage file\r\n"+err);
-                  }
-                
-                  log(chalk.green("SUCCESS:") + " archived event "+ objEvent.transactionHash);
-                });
               }
             });
+            
+            fs.writeJsonSync(objConfig.storage.path, objCacheData, err => {
+              if (err) {
+                log(chalk.red("ERROR:") + " an error occurred when writing to the storage file\r\n"+err);
+              }
+            
+              log(chalk.green("SUCCESS:") + " archived event "+ objEvent.transactionHash);
+            }); 
         });
-      }, 5000);
 
+      }, 5000);
   }
 })
