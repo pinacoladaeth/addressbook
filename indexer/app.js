@@ -57,10 +57,13 @@ fs.ensureFile(objConfig.storage.path, err => {
         .then(function(events){
             log(chalk.blue("INFO: ") + events.length +" events found.");
             
+            // @todo - update the last_block in the cache file so we don't check already checked blocks
+
             events.forEach(objEvent => {
               if(objEvent.returnValues["from"] in objCacheData.events.Connection) {
                 if(objEvent.returnValues["to"] in objCacheData.events.Connection[objEvent.returnValues["from"]]) {
                   objCacheData.events.Connection[objEvent.returnValues["from"]].connections.push(objEvent.returnValues["to"]);
+                  log(chalk.green("SUCCESS:") + " Archived event "+ objEvent.transactionHash);
                 }
               } else {
                 objCacheData.events.Connection[objEvent.returnValues["from"]] = {
@@ -68,12 +71,13 @@ fs.ensureFile(objConfig.storage.path, err => {
                     objEvent.returnValues["to"]
                   ]
                 };
+                log(chalk.green("SUCCESS:") + " Archived event "+ objEvent.transactionHash);
               }
              });
 
-              const newConnection = Object.keys(objCacheData.events.Connection)
+            const newConnection = Object.keys(objCacheData.events.Connection)
               .reduce((acc, key) => {acc[key] = objCacheData.events.Connection[key].connections; return acc}, {})
-             return fs.writeJson(objConfig.storage.path, {last_block: objCacheData.last_block, events: {Connection: newConnection}});
+            return fs.writeJson(objConfig.storage.path, {last_block: objCacheData.last_block, events: {Connection: newConnection}});
         }).catch(console.log);
       }, 5000);
   }
