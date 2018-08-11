@@ -39,7 +39,7 @@ fs.ensureFile(objConfig.storage.path, err => {
       objCacheData = {
         "last_block": objConfig.contract.birth_block,
         "events": {
-          "Connection": []
+          "Connection": {}
         }
       };      
       intStartBlock = objCacheData.last_block;
@@ -58,8 +58,10 @@ fs.ensureFile(objConfig.storage.path, err => {
             log(chalk.blue("INFO: ") + events.length +" events found.");
             
             events.forEach(objEvent => {
-              if(objCacheData.events.Connection[objEvent.returnValues["from"]]) {
-                objCacheData.events.Connection[objEvent.returnValues["from"]].connections.push(objEvent.returnValues["to"]);
+              if(objEvent.returnValues["from"] in objCacheData.events.Connection) {
+                if(objEvent.returnValues["to"] in objCacheData.events.Connection[objEvent.returnValues["from"]]) {
+                  objCacheData.events.Connection[objEvent.returnValues["from"]].connections.push(objEvent.returnValues["to"]);
+                }
               } else {
                 objCacheData.events.Connection[objEvent.returnValues["from"]] = {
                   "connections": [
@@ -71,7 +73,7 @@ fs.ensureFile(objConfig.storage.path, err => {
 
               const newConnection = Object.keys(objCacheData.events.Connection)
               .reduce((acc, key) => {acc[key] = objCacheData.events.Connection[key].connections; return acc}, {})
-             return fs.writeJson(objConfig.storage.path, {last_block: objCacheData.last_block, events: newConnection});
+             return fs.writeJson(objConfig.storage.path, {last_block: objCacheData.last_block, events: {Connection: newConnection}});
         }).catch(console.log);
       }, 5000);
   }
