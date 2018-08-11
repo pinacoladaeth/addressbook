@@ -13,6 +13,8 @@ birth_block = 0
 path = "./data/events.json"
 
 ; This is the web3 settings
-; - provider: the provider url (get one at infura.io ;))
+; - provider: the provider url (get one at infura.io)
+; - provider_type: the type of provider, either http or ws
 [web3]
 provider = ''
+provider_type = 'http'
