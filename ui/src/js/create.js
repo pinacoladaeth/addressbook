@@ -1,9 +1,13 @@
 const api = require('./api')
 const utils = require('./utils')
 
+const getPicture = (user) => {
+    return (typeof user.details.picture !== 'undefined') ? user.details.picture : 'https://bulma.io/images/placeholders/96x96.png'
+}
+
 const addressbookCard = (user) => {
     const template = document.createElement('template')
-    const picture = (typeof user.details.picture !== 'undefined') ? user.details.picture : 'https://bulma.io/images/placeholders/96x96.png'
+    const picture = getPicture(user)
     const content = Object.keys(user.details)
         .filter(key => key !== 'picture')
         .reduce((acc, key) => `${acc} - ${utils.capitalize(key)} <strong>${user.details[key]}</strong>`, '')
@@ -18,7 +22,7 @@ const addressbookCard = (user) => {
                         </figure>
                     </div>
                     <div class="media-content">
-                        <p class="title is-4">${user.ens_domains}</p>
+                        <p class="title is-4"><a>${user.ens_domains}</a></p>
                         <p class="subtitle is-6">${user.publickey}</p>
                     </div>
                 </div>
@@ -32,11 +36,106 @@ const addressbookCard = (user) => {
         </div>`
 
     template.innerHTML = html.trim()
+
+    return template.content.firstChild
+}
+
+const profileCard = (user) => {
+    const template = document.createElement('template')
+
+    const picture = getPicture(user)
+    const details = Object.keys(user.details).reduce(
+        (acc, key) => `${acc}${utils.capitalize(key)}: <a>${user.details[key]}</a> <br/>`,
+        '')
+    const editDetails = Object.keys(user.details).reduce(
+        (acc, key) => `${acc}<div class="field has-addons m-0">
+                        <p class="control">
+                            <a class="button is-static">${utils.capitalize(key)}</a>
+                        </p>
+                        <p class="control is-expanded">
+                            <input class="input" type="text" value="${user.details[key]}">
+                        </p>
+                    </div>`,
+        '')
+
+    const html = `
+    <div class="container w-100 mt-2">
+        <div class="card" id="consultProfileCard">
+            <div class="card-content">
+                <div class="media">
+                    <div class="media-left">
+                        <figure class="image is-48x48">
+                            <img src="${picture}" alt="Placeholder image">
+                        </figure>
+                    </div>
+                    <div class="media-content">
+                        <p class="title is-4">${user.ens_domains}</p>
+                        <p class="subtitle is-6">${user.publickey}</p>
+                    </div>
+    
+                    <div class="media-right">
+                        <a id="editProfileButton"><span class="icon"><i class="fas fa-edit"></i></span></a>
+                    </div>
+                </div>
+    
+                <div class="content">
+                    ${details}
+                    <br/>
+                    <time datetime="2016-1-1">${user.time}</time>
+                </div>
+            </div>
+        </div>
+    
+        <div class="card is-hidden" id="editProfileCard">
+            <form class="card-content">
+                <div class="media">
+                    <div class="media-left">
+                        <figure class="image is-48x48">
+                            <img src="${picture}" alt="Placeholder image">
+                        </figure>
+                    </div>
+                    <div class="media-content">
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-medium" type="text" placeholder="Text input" value="${user.ens_domains}">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <input class="input" type="text" placeholder="Text input"
+                                       value="${user.publickey}">
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="media-right">
+                        <a id="cancelEditProfileButton"><span class="icon"><i class="fas fa-times"></i></span></a>
+                    </div>
+                </div>
+    
+                <div class="content mt-1">
+                    ${editDetails}
+                    <div class="field is-right">
+                        <div class="control has-text-centered">
+                            <a id="confirmEditButton" class="button is-info">
+                                <span class="text">Confirm</span>
+                                <span class="icon"><i class="fas fa-check"></i></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    `
+
+    template.innerHTML = html.trim()
+
     return template.content.firstChild
 }
 
 const mediaUserCard = (user) => {
-    const picture = (typeof user.details.picture !== 'undefined') ? user.details.picture : 'https://bulma.io/images/placeholders/96x96.png'
+    const picture = getPicture(user)
 
     const html = `
         <div class="media">
@@ -104,5 +203,6 @@ const followingFollowersCards = async (address) => {
 
 module.exports = {
     addressbookCard: addressbookCard,
-    followingFollowersCards: followingFollowersCards
+    followingFollowersCards: followingFollowersCards,
+    profileCard: profileCard
 }

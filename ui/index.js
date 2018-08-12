@@ -28,7 +28,7 @@ const initTabs = () => {
     })
 
     tabs[Array.from(tabs).reduce((acc, tab, index) =>
-        (tab.getAttribute('data').toLowerCase() === location.hash.slice(1).toLowerCase()) ? index : acc,
+        (tab.getAttribute('data').toLowerCase() === location.hash.split('-')[0].slice(1).toLowerCase()) ? index : acc,
         0)].click()
 }
 
@@ -65,7 +65,11 @@ const initAddressBook = async () => {
             }).slice(0, 10)
             .map(key => {
                 const user = users[key]
-                cards.appendChild(create.addressbookCard(user))
+                const card = create.addressbookCard(user)
+                card.querySelector('.media-content > .title').onclick = () => {
+                    accessProfile(user.publickey)
+                }
+                cards.appendChild(card)
         })
     }
 
@@ -81,11 +85,16 @@ const initProfile = async (user) => {
     // }
 
     const profileSection = document.querySelector('#profileSection')
-    const editButton = profileSection.querySelector('#editProfileButton')
-    const editCard = profileSection.querySelector('#editProfileCard')
-    const cancelEditButton = profileSection.querySelector('#cancelEditProfileButton')
-    const consultCard = profileSection.querySelector('#consultProfileCard')
-    const confirmEditButton = profileSection.querySelector('#confirmEditButton')
+
+    const profileCard = profileSection.querySelector('#profileCard')
+    profileCard.innerHTML = ''
+    profileCard.appendChild(create.profileCard(user))
+
+    const editButton = profileCard.querySelector('#editProfileButton')
+    const editCard = profileCard.querySelector('#editProfileCard')
+    const cancelEditButton = profileCard.querySelector('#cancelEditProfileButton')
+    const consultCard = profileCard.querySelector('#consultProfileCard')
+    const confirmEditButton = profileCard.querySelector('#confirmEditButton')
 
     editButton.onclick = () => {
         consultCard.classList.add('is-hidden')
@@ -103,7 +112,6 @@ const initProfile = async (user) => {
 
     const followersFollowing = profileSection.querySelector('.followersFollowing')
     followersFollowing.innerHTML = ''
-    console.log(await create.followingFollowersCards(user.publickey))
     Array.from(await create.followingFollowersCards(user.publickey))
         .map(el => { followersFollowing.appendChild(el) })
 }
@@ -113,6 +121,14 @@ const init = () => {
     initRegistration()
     initAddressBook()
     initProfile(api.infos())
+}
+
+const accessProfile = async (address) => {
+    document.querySelector('.tabs').querySelector('li[data=profileSection]').click()
+    location.hash = `${location.hash}-${address}`
+
+    const user = await api.infos(address)
+    initProfile(user)
 }
 
 const main = () => {
