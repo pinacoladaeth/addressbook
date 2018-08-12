@@ -58,6 +58,25 @@ Example output:
 }
 ```
 
+### `GET /user/<address>
+
+This returns a JSON object containing the user details. Keys are consistant (except in `details`), but values may be blank.
+
+Example output: 
+
+```json
+{
+    "ens_domain": "",
+    "public_key": "",
+    "time": "",
+    "details": {
+        "twitter": "",
+        "picture": "",
+        "website": ""
+    }
+}
+```
+
 ## Example config
 
 ```ini
