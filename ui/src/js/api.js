@@ -1,6 +1,6 @@
 const request = require('request-promise-native')
 
-const url = ''
+const url = 'http://localhost:8080'
 
 const getUrl = (path) => `${url}${path}`
 
@@ -20,8 +20,8 @@ const infos = async (address) => {
 }
 
 module.exports = {
-    followers: (address) => [],
-    following: (address) =>  [],
+    followers: followers,
+    following: following,
     infos: (address) => { return {
         ens_domains: 'thibmeu.eth',
         publickey: address,

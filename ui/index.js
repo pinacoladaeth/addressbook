@@ -1,4 +1,5 @@
 window.Web3 = require('web3')
+window.web3 = new Web3(window.web3.currentProvider)
 const api = require('./src/js/api.js')
 const create = require('./src/js/create.js')
 
