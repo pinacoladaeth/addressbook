@@ -11,7 +11,7 @@ The settings are stored in `config.ini` (you will need to rename `config.ini.exa
 
 ## API
 
-The API has 2 endpoints;
+The following endpoints;
 
 ### `GET /user/<address>/following`
 
@@ -58,7 +58,7 @@ Example output:
 }
 ```
 
-### `GET /user/<address>
+### `GET /user/<address>`
 
 This returns a JSON object containing the user details. Keys are consistant (except in `details`), but values may be blank.
 
