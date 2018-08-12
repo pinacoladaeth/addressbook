@@ -88,7 +88,9 @@ Example output:
     "error": "Invalid JSON in postbody"
 }
 
-
+{
+    "hash": "QmVJg2j9XkhjyLH4yZSMRW4SsXNs8U3CfeJnxisobEVWHs"
+}
 ```
 
 ## Example config
