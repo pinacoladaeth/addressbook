@@ -12,6 +12,7 @@ contract Pinacolada {
   ReverseRegistrar public reverseRegistrar;
   
   mapping (address => address[]) public addrGraph;
+  mapping (address => string) public profile;
   event Connection (address from, address to);
  
 
@@ -29,6 +30,17 @@ contract Pinacolada {
         if(friendAddr!=_friendAddr) revert();
         addrGraph[msg.sender].push(_friendAddr);
         Connection(msg.sender, _friendAddr);
+    }
+    
+    function updateProfile (bytes32 _nameHash, string _ipfsContentHash) public {
+        address myAddr = resolver.addr(_nameHash);
+        if(myAddr != msg.sender) revert();
+        
+        profile[msg.sender] = _ipfsContentHash;
+    }
+    
+    function getProfile (address _addr) public view returns (string){
+        return profile[_addr];
     }
     
     function isMember(address _person) public view returns (bool) {
