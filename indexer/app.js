@@ -2,11 +2,16 @@
 
 const fs = require('fs-extra');
 const ini = require('ini');
+let objConfig = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 const server = require('server');
 const { get, post } = server.router;
+const IPFS = require('ipfs-mini');
+const ipfs = new IPFS({ 
+    host: objConfig.ipfs.node, 
+    port: objConfig.ipfs.port, 
+    protocol: objConfig.ipfs.protocol 
+  });
  
-let objConfig = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
-
 // Launch server with options and a couple of routes
 server({ port: 8080, security: { csrf: false } }, [
   get('/user/:address/followers', ctx => {
@@ -97,15 +102,8 @@ server({ port: 8080, security: { csrf: false } }, [
           "users": arrUsers
       };
   }),
-  post('/ipfs/upload', ctx => {
+  post('/ipfs/upload',async ctx => {
       // Uploads to ipfs
-
-      const IPFS = require('ipfs-mini');
-      const ipfs = new IPFS({ 
-          host: objConfig.ipfs.node, 
-          port: objConfig.ipfs.port, 
-          protocol: objConfig.ipfs.protocol 
-        });
 
       try {
           JSON.parse(ctx.data);
@@ -115,24 +113,30 @@ server({ port: 8080, security: { csrf: false } }, [
           }
       }
 
-      ipfs.addJSON(ctx.data, (err, result) => {
-        if(err) {
-            return {
-                "error": err
-            }
-        }
-
+      try{
+        var _hash = await ipfsAddJson(ctx.data);
+      }
+      catch(e) {
+          console.log(e)
         return {
-            "hash": result
+            "error": e
         }
-      });
-      console.log("-----");
-      console.log(r);
-      console.log("-----");
+      }
 
-      console.log(response);
-      process.exit(1);
+      return {
+          "hash": _hash
+      }
 
-      return response;
   })
+  
 ]);
+
+function ipfsAddJson (obj) {
+    return new Promise (function (resolve, reject){
+        ipfs.addJSON(obj, function (err, res){
+            resolve(res);
+            if (err) reject(err)
+            resolve(res);
+        })
+    })
+}
