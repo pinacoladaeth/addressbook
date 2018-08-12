@@ -75,6 +75,7 @@ const profileCard = (user) => {
     
                     <div class="media-right">
                         <a id="editProfileButton"><span class="icon"><i class="fas fa-edit"></i></span></a>
+                        <a id="followProfileButton" class="button">Follow</a>
                     </div>
                 </div>
     

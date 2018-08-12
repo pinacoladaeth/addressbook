@@ -24,7 +24,7 @@ module.exports = {
     following: (address) =>  [],
     infos: (address) => { return {
         ens_domains: 'thibmeu.eth',
-        publickey: '0x70cd64a912ce15728a1136882637b4c2ba0d5d86',
+        publickey: address,
         time: 'Sat Aug 11 2018 17:39:17 GMT+0100 (BST)',
         details: {
             twitter: '@thibmeu',
@@ -41,5 +41,15 @@ module.exports = {
                 github: 'thibmeu',
                 tripadvisor: 'thibmeu'
             }
-        } } }
+        },
+        '0x1a9e26917023a9eca3b544b631609054c0b1528e': {
+            ens_domains: 'vitalik.eth',
+            publickey: '0x1a9e26917023a9eca3b544b631609054c0b1528e',
+            time: 'Sat Aug 11 2018 17:39:17 GMT+0100 (BST)',
+            details: {
+                twitter: '@vitalik',
+                github: 'vitalik',
+                website: 'vitalik.ca'
+            }
+        }} }
 }

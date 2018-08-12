@@ -77,6 +77,14 @@ const initAddressBook = async () => {
 }
 
 const initProfile = async (user) => {
+    const web3Address = (typeof web3 === 'undefined') ? '0x70cd64a912ce15728a1136882637b4c2ba0d5d86' : web3.eth.accounts[0]
+    if (typeof user === 'undefined') {
+        if (location.hash.split('-').length > 1) {
+            user = await api.infos(location.hash.split('-')[1])
+        } else {
+            user = await api.infos(web3Address)
+        }
+    }
     // if (typeof web3 === 'undefined') {
     //     document.querySelector('.tabs')
     //         .querySelector('li[data=profileSection]')
@@ -95,6 +103,7 @@ const initProfile = async (user) => {
     const cancelEditButton = profileCard.querySelector('#cancelEditProfileButton')
     const consultCard = profileCard.querySelector('#consultProfileCard')
     const confirmEditButton = profileCard.querySelector('#confirmEditButton')
+    const followButton = profileCard.querySelector('#followProfileButton')
 
     editButton.onclick = () => {
         consultCard.classList.add('is-hidden')
@@ -110,6 +119,14 @@ const initProfile = async (user) => {
         consultCard.classList.remove('is-hidden')
     }
 
+    if (web3Address === user.publickey) {
+        followButton.classList.add('is-hidden')
+        editButton.classList.remove('is-hidden')
+    } else {
+        editButton.classList.add('is-hidden')
+        followButton.classList.remove('is-hidden')
+    }
+
     const followersFollowing = profileSection.querySelector('.followersFollowing')
     followersFollowing.innerHTML = ''
     Array.from(await create.followingFollowersCards(user.publickey))
@@ -120,7 +137,7 @@ const init = () => {
     initTabs()
     initRegistration()
     initAddressBook()
-    initProfile(api.infos())
+    initProfile()
 }
 
 const accessProfile = async (address) => {
