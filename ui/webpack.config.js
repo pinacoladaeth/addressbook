@@ -5,5 +5,10 @@ module.exports = {
         filename: 'bundle.js'
     },
     plugins: [
-    ]
+    ],
+    node: {
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty'
+    }
 }
