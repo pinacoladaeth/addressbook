@@ -77,6 +77,20 @@ Example output:
 }
 ```
 
+### `POST /ipfs/upload`
+
+This attempts to upload some JSON to IPFS and returns the hash. The body _needs_ to be valid JSON.
+
+Example output:
+
+```json
+{
+    "error": "Invalid JSON in postbody"
+}
+
+
+```
+
 ## Example config
 
 ```ini
@@ -85,8 +99,8 @@ Example output:
 ; - abi: the abi for the contract
 ; - birth_block: the block the contract was deployed on
 [contract]
-address = 0x714c881d133ed6c3e899346687cda03c47da05be
-abi = '[{"constant":true,"inputs":[],"name":"resolver","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"registrar","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_friendNameHash","type":"bytes32"},{"name":"_friendAddr","type":"address"}],"name":"registerFriend","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"uint256"}],"name":"addrGraph","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"registry","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"reverseRegistrar","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_person","type":"address"}],"name":"isMember","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"registryA","type":"address"},{"name":"registrarA","type":"address"},{"name":"resolverA","type":"address"},{"name":"reverseRegistrarA","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"from","type":"address"},{"indexed":false,"name":"to","type":"address"}],"name":"Connection","type":"event"}]'
+address = 0x7150ac3542f7198effb1a9fdb19323b11a5e6d54
+abi = '[{"anonymous":false,"inputs":[{"indexed":false,"name":"from","type":"address"},{"indexed":false,"name":"to","type":"address"}],"name":"Connection","type":"event"},{"constant":false,"inputs":[{"name":"_friendNameHash","type":"bytes32"},{"name":"_friendAddr","type":"address"}],"name":"registerFriend","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"registryA","type":"address"},{"name":"registrarA","type":"address"},{"name":"resolverA","type":"address"},{"name":"reverseRegistrarA","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"constant":false,"inputs":[{"name":"_nameHash","type":"bytes32"},{"name":"_ipfsContentHash","type":"string"}],"name":"updateProfile","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"uint256"}],"name":"addrGraph","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_addr","type":"address"}],"name":"getProfile","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_person","type":"address"}],"name":"isMember","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"profile","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"registrar","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"registry","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"resolver","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"reverseRegistrar","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}]'
 birth_block = 3815605
 
 ; This is the storage settings.
@@ -100,4 +114,13 @@ path = "./data/events.json"
 [web3]
 provider = 'wss://ropsten.infura.io/ws'
 provider_type = 'ws'
+
+; This is the ipfs settings
+; - node: the domain name of the node
+; - port: the port for the ipfs server
+; - protocol: the protocol to communicate with the server
+[ipfs]
+node = ipfs.infura.io
+port = 5001
+protocol = 'https'
 ```

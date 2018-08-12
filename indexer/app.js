@@ -8,7 +8,7 @@ const { get, post } = server.router;
 let objConfig = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 
 // Launch server with options and a couple of routes
-server({ port: 8080 }, [
+server({ port: 8080, security: { csrf: false } }, [
   get('/user/:address/followers', ctx => {
     // Gets the user followers
     let strData = fs.readFileSync(objConfig.storage.path);
@@ -57,6 +57,7 @@ server({ port: 8080 }, [
   get('/user/:address', ctx => {
       // Gets a specified users details
 
+      // @todo - query the smart contract and ipfs for this
       return {
           "ens_domain": "",
           "public_key": ctx.params.address,
@@ -95,5 +96,43 @@ server({ port: 8080 }, [
       return {
           "users": arrUsers
       };
+  }),
+  post('/ipfs/upload', ctx => {
+      // Uploads to ipfs
+
+      const IPFS = require('ipfs-mini');
+      const ipfs = new IPFS({ 
+          host: objConfig.ipfs.node, 
+          port: objConfig.ipfs.port, 
+          protocol: objConfig.ipfs.protocol 
+        });
+
+      try {
+          JSON.parse(ctx.data);
+      } catch (e) {
+          return {
+              "error": "Invalid JSON in postbody"
+          }
+      }
+
+      ipfs.addJSON(ctx.data, (err, result) => {
+        if(err) {
+            return {
+                "error": err
+            }
+        }
+
+        return {
+            "hash": result
+        }
+      });
+      console.log("-----");
+      console.log(r);
+      console.log("-----");
+
+      console.log(response);
+      process.exit(1);
+
+      return response;
   })
 ]);

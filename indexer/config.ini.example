@@ -18,3 +18,12 @@ path = "./data/events.json"
 [web3]
 provider = ''
 provider_type = 'http'
+
+; This is the ipfs settings
+; - node: the domain name of the node
+; - port: the port for the ipfs server
+; - protocol: the protocol to communicate with the server
+[ipfs]
+node = ipfs.infura.io
+port = 5001
+protocol = 'https'
