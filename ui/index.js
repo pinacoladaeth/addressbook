@@ -1,29 +1,6 @@
 window.Web3 = require('web3')
-
-const capitalize = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-const users = {
-    "0x70cd64a912ce15728a1136882637b4c2ba0d5d86": {
-        ens_domains: 'thibmeu.eth',
-        time: 'Sat Aug 11 2018 17:39:17 GMT+0100 (BST)',
-        details: {
-            twitter: '@thibmeu',
-            github: 'thibmeu',
-            tripadvisor: 'thibmeu'
-        }
-    },
-    "0x1a9e26917023a9eca3b544b631609054c0b1528e": {
-        ens_domains: 'vitalik.eth',
-        time: 'Sat Aug 11 2018 17:39:17 GMT+0100 (BST)',
-        details: {
-            twitter: '@VitalikButerin',
-            github: 'vitalik',
-            website: 'vitalik.ca'
-        }
-    }
-}
+const api = require('./src/js/api.js')
+const create = require('./src/js/create.js')
 
 const checkFormValidity = () => {
     const form = document.querySelector('form');
@@ -64,9 +41,11 @@ const initRegistration = () => {
     }
 }
 
-const initAddressBook = () => {
+const initAddressBook = async () => {
     const addressbookSection = document.querySelector('#addressbookSection')
     const search = addressbookSection.querySelector('#addressbookSearch')
+
+    const users = await api.users()
 
     search.oninput = () => {
         const cards = addressbookSection.querySelector('.cards')
@@ -85,18 +64,22 @@ const initAddressBook = () => {
                 ].reduce((acc, el) => request === '' || acc || el.toLowerCase().includes(request.toLowerCase()), false)
             }).slice(0, 10)
             .map(key => {
-                const user = {
-                    publickey: key,
-                    ...users[key]
-                }
-                cards.appendChild(createAddressbookCard(user))
+                const user = users[key]
+                cards.appendChild(create.addressbookCard(user))
         })
     }
 
     search.oninput()
 }
 
-const initProfile = () => {
+const initProfile = async (user) => {
+    // if (typeof web3 === 'undefined') {
+    //     document.querySelector('.tabs')
+    //         .querySelector('li[data=profileSection]')
+    //         .classList.add('is-hidden')
+    //     return
+    // }
+
     const profileSection = document.querySelector('#profileSection')
     const editButton = profileSection.querySelector('#editProfileButton')
     const editCard = profileSection.querySelector('#editProfileCard')
@@ -117,47 +100,19 @@ const initProfile = () => {
         editCard.classList.add('is-hidden')
         consultCard.classList.remove('is-hidden')
     }
-}
 
-const createAddressbookCard = (user) => {
-    const template = document.createElement('template')
-    const picture = (typeof user.details.picture !== 'undefined') ? user.details.picture : 'https://bulma.io/images/placeholders/96x96.png'
-    const content = Object.keys(user.details)
-        .filter(key => key !== 'picture')
-        .reduce((acc, key) => `${acc} - ${capitalize(key)} <strong>${user.details[key]}</strong>`, '')
-        .slice(' - '.length)
-    const html = `
-        <div class="card">
-            <div class="card-content">
-                <div class="media">
-                    <div class="media-left">
-                        <figure class="image is-48x48">
-                            <img src="${picture}" alt="Placeholder image">
-                        </figure>
-                    </div>
-                    <div class="media-content">
-                        <p class="title is-4">${user.ens_domains}</p>
-                        <p class="subtitle is-6">${user.publickey}</p>
-                    </div>
-                </div>
-
-                <div class="content">
-                    ${content}
-                    <br>
-                    <time datetime="${user.time}">${(new Date(user.time)).toLocaleString()}</time>
-                </div>
-            </div>
-        </div>`
-
-    template.innerHTML = html.trim()
-    return template.content.firstChild
+    const followersFollowing = profileSection.querySelector('.followersFollowing')
+    followersFollowing.innerHTML = ''
+    console.log(await create.followingFollowersCards(user.publickey))
+    Array.from(await create.followingFollowersCards(user.publickey))
+        .map(el => { followersFollowing.appendChild(el) })
 }
 
 const init = () => {
     initTabs()
     initRegistration()
     initAddressBook()
-    initProfile()
+    initProfile(api.infos())
 }
 
 const main = () => {
