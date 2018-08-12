@@ -54,7 +54,7 @@ server({ port: 8080 }, [
         "following":[]
     };
   }),
-  get('/user/:address/details', ctx => {
+  get('/user/:address', ctx => {
       // Gets a specified users details
 
       return {
