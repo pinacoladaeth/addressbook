@@ -43,6 +43,21 @@ Example output:
 }
 ```
 
+### `GET /user`
+
+This returns a JSON object containing an array of addresses of users on the platform - these are users
+that have trusted themselves (i.e.: registered to the platform)
+
+Example output:
+
+```json
+{
+    "users": [
+        " 0x07Cff6218249a2351A174Bdc1E5b1632e8e4E673"
+    ]
+}
+```
+
 ## Example config
 
 ```ini
