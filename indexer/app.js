@@ -57,7 +57,16 @@ server({ port: 8080 }, [
   get('/user/:address/details', ctx => {
       // Gets a specified users details
 
-      // @todo
+      return {
+          "ens_domain": "",
+          "public_key": ctx.params.address,
+          "time": "",
+          "details": {
+              "twitter": "",
+              "picture": "",
+              "website": ""
+          }
+      };
   }),
   get('/user', ctx => {
       // Returns a list of all the users
