@@ -22,8 +22,8 @@ const addressbookCard = (user) => {
                         </figure>
                     </div>
                     <div class="media-content">
-                        <p class="title is-4"><a>${user.ens_domains}</a></p>
-                        <p class="subtitle is-6">${user.publickey}</p>
+                        <p class="title is-4"><a>${user.ens_domain}</a></p>
+                        <p class="subtitle is-6">${user.public_key}</p>
                     </div>
                 </div>
 
@@ -69,8 +69,8 @@ const profileCard = (user) => {
                         </figure>
                     </div>
                     <div class="media-content">
-                        <p class="title is-4">${user.ens_domains}</p>
-                        <p class="subtitle is-6">${user.publickey}</p>
+                        <p class="title is-4">${user.ens_domain}</p>
+                        <p class="subtitle is-6">${user.public_key}</p>
                     </div>
     
                     <div class="media-right">
@@ -98,13 +98,13 @@ const profileCard = (user) => {
                     <div class="media-content">
                         <div class="field">
                             <div class="control">
-                                <input class="input is-medium" type="text" placeholder="Text input" value="${user.ens_domains}">
+                                <input class="input is-medium" type="text" placeholder="Text input" value="${user.ens_domain}">
                             </div>
                         </div>
                         <div class="field">
                             <div class="control">
                                 <input class="input" type="text" placeholder="Text input"
-                                       value="${user.publickey}">
+                                       value="${user.public_key}">
                             </div>
                         </div>
                     </div>
@@ -136,6 +136,8 @@ const profileCard = (user) => {
 }
 
 const mediaUserCard = (user) => {
+    const template = document.createElement('template')
+
     const picture = getPicture(user)
 
     const html = `
@@ -146,8 +148,8 @@ const mediaUserCard = (user) => {
                 </figure>
             </div>
             <div class="media-content">
-                <p class="title is-6">${user.ens_domains}</p>
-                <p class="subtitle is-6">${user.publickey}</p>
+                <p class="title is-6">${user.ens_domain}</p>
+                <p class="subtitle is-6">${user.public_key.slice(0, 8)}</p>
             </div>
         </div>
     `
@@ -159,7 +161,7 @@ const mediaUserCard = (user) => {
 const mediaUserCards = async (addresses) => {
     const users = await Promise.all(addresses.map(api.infos))
 
-    return users.reduce((acc, user) => `${acc}${mediaUserCard(user)}`, '')
+    return users.reduce((acc, user) => `${acc}${mediaUserCard(user).innerHTML}`, '')
 }
 
 const followingFollowersCards = async (address) => {
@@ -167,6 +169,7 @@ const followingFollowersCards = async (address) => {
 
     const followers = await api.followers(address)
     const following = await api.following(address)
+    console.log(await mediaUserCards(followers))
     const followerCards = await mediaUserCards(followers)
     const followingCards = await mediaUserCards(following)
 

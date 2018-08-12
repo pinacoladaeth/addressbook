@@ -1,7 +1,9 @@
 window.Web3 = require('web3')
 window.web3 = new Web3(window.web3.currentProvider)
-const api = require('./src/js/api.js')
-const create = require('./src/js/create.js')
+const api = require('./src/js/api')
+const create = require('./src/js/create')
+//const ens = require('./src/js/ens')
+const ens = {register: () => {}}
 
 const checkFormValidity = () => {
     const form = document.querySelector('form');
@@ -29,7 +31,7 @@ const initTabs = () => {
     })
 
     tabs[Array.from(tabs).reduce((acc, tab, index) =>
-        (tab.getAttribute('data').toLowerCase() === location.hash.split('-')[0].slice(1).toLowerCase()) ? index : acc,
+            (tab.getAttribute('data').toLowerCase() === location.hash.split('-')[0].slice(1).toLowerCase()) ? index : acc,
         0)].click()
 }
 
@@ -46,7 +48,21 @@ const initAddressBook = async () => {
     const addressbookSection = document.querySelector('#addressbookSection')
     const search = addressbookSection.querySelector('#addressbookSearch')
 
-    const users = await api.users()
+    let users = await api.users()
+    users = await Promise.all(users.map(api.infos))
+    users = users.reduce((acc, user) => {
+        acc[user.public_key] = user
+        return acc
+    }, {})
+    users = Object.keys(users).map((key, index) => {
+        const user = users[key]
+        user.ens_domain = `${''.padEnd(index+1, 'a')}.eth`
+        user.details.twitter = '@coucou'
+        user.details.website = 'perdu.com'
+        user.time = (new Date()).toString()
+        delete user.details.picture
+        return user
+    })
 
     search.oninput = () => {
         const cards = addressbookSection.querySelector('.cards')
@@ -59,7 +75,7 @@ const initAddressBook = async () => {
                 const user = users[key]
                 return [
                     key,
-                    user.ens_domains,
+                    user.ens_domain,
                     ...Object.keys(user.details),
                     ...Object.values(user.details)
                 ].reduce((acc, el) => request === '' || acc || el.toLowerCase().includes(request.toLowerCase()), false)
@@ -68,17 +84,18 @@ const initAddressBook = async () => {
                 const user = users[key]
                 const card = create.addressbookCard(user)
                 card.querySelector('.media-content > .title').onclick = () => {
-                    accessProfile(user.publickey)
+                    accessProfile(user.public_key)
                 }
                 cards.appendChild(card)
-        })
+            })
     }
 
     search.oninput()
 }
 
 const initProfile = async (user) => {
-    const web3Address = (typeof web3 === 'undefined') ? '0x70cd64a912ce15728a1136882637b4c2ba0d5d86' : web3.eth.accounts[0]
+    // const web3Address = (typeof web3 === 'undefined') ? '0x70cd64a912ce15728a1136882637b4c2ba0d5d86' : web3.eth.accounts[0]
+    const web3Address = '0x70cd64a912ce15728a1136882637b4c2ba0d5d86'
     if (typeof user === 'undefined') {
         if (location.hash.split('-').length > 1) {
             user = await api.infos(location.hash.split('-')[1])
@@ -119,8 +136,11 @@ const initProfile = async (user) => {
         editCard.classList.add('is-hidden')
         consultCard.classList.remove('is-hidden')
     }
+    followButton.onclick = () => {
+        ens.register(user.ens_domain, user.public_key)
+    }
 
-    if (web3Address === user.publickey) {
+    if (web3Address === user.public_key) {
         followButton.classList.add('is-hidden')
         editButton.classList.remove('is-hidden')
     } else {
@@ -128,9 +148,15 @@ const initProfile = async (user) => {
         followButton.classList.remove('is-hidden')
     }
 
+    const followers = await api.followers(user.public_key)
+    if (followers.includes(web3Address)) {
+        followButton.innerText = 'Trusted'
+        followButton.classList.add('is-disabled')
+    }
+
     const followersFollowing = profileSection.querySelector('.followersFollowing')
     followersFollowing.innerHTML = ''
-    Array.from(await create.followingFollowersCards(user.publickey))
+    Array.from(await create.followingFollowersCards(user.public_key))
         .map(el => { followersFollowing.appendChild(el) })
 }
 
