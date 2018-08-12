@@ -161,7 +161,7 @@ const mediaUserCard = (user) => {
 const mediaUserCards = async (addresses) => {
     const users = await Promise.all(addresses.map(api.infos))
 
-    return users.reduce((acc, user) => `${acc}${mediaUserCard(user).innerHTML}`, '')
+    return users.reduce((acc, user) => `${acc}${mediaUserCard(user).outerHTML}`, '')
 }
 
 const followingFollowersCards = async (address) => {
@@ -169,7 +169,6 @@ const followingFollowersCards = async (address) => {
 
     const followers = await api.followers(address)
     const following = await api.following(address)
-    console.log(await mediaUserCards(followers))
     const followerCards = await mediaUserCards(followers)
     const followingCards = await mediaUserCards(following)
 
@@ -181,7 +180,7 @@ const followingFollowersCards = async (address) => {
                         <div class="title is-4">Following (${following.length})</div>
                     </div>
                     <div class="content">
-                        ${followerCards}
+                        ${followingCards}
                     </div>
                 </div>
             </div>
@@ -193,7 +192,7 @@ const followingFollowersCards = async (address) => {
                         <div class="title is-4">Followers (${followers.length})</div>
                     </div>
                     <div class="content">
-                        ${followingCards}
+                        ${followerCards}
                     </div>
                 </div>
             </div>

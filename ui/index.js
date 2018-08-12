@@ -74,7 +74,7 @@ const initAddressBook = async () => {
             .filter(key => {
                 const user = users[key]
                 return [
-                    key,
+                    user.public_key,
                     user.ens_domain,
                     ...Object.keys(user.details),
                     ...Object.values(user.details)
