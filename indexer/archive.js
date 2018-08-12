@@ -61,22 +61,26 @@ fs.ensureFile(objConfig.storage.path, err => {
 
             events.forEach(objEvent => {
               if(objEvent.returnValues["from"] in objCacheData.events.Connection) {
-                if(objEvent.returnValues["to"] in objCacheData.events.Connection[objEvent.returnValues["from"]]) {
-                  objCacheData.events.Connection[objEvent.returnValues["from"]].connections.push(objEvent.returnValues["to"]);
+                if(objCacheData.events.Connection[objEvent.returnValues["from"]].indexOf(objEvent.returnValues["to"]) < 0) {
+                  objCacheData.events.Connection[objEvent.returnValues["from"]].push(objEvent.returnValues["to"]);
                   log(chalk.green("SUCCESS:") + " Archived event "+ objEvent.transactionHash);
+                  console.log("From: "+ objEvent.returnValues["from"]);
+                  console.log("To: "+ objEvent.returnValues["to"]);
+                  console.log("----");
                 }
               } else {
-                objCacheData.events.Connection[objEvent.returnValues["from"]] = {
-                  "connections": [
+                objCacheData.events.Connection[objEvent.returnValues["from"]] = [
                     objEvent.returnValues["to"]
                   ]
-                };
                 log(chalk.green("SUCCESS:") + " Archived event "+ objEvent.transactionHash);
+                console.log("From: "+ objEvent.returnValues["from"]);
+                console.log("To: "+ objEvent.returnValues["to"]);
+                console.log("----");
               }
              });
 
             const newConnection = Object.keys(objCacheData.events.Connection)
-              .reduce((acc, key) => {acc[key] = objCacheData.events.Connection[key].connections; return acc}, {})
+              .reduce((acc, key) => {acc[key] = objCacheData.events.Connection[key]; return acc}, {})
             return fs.writeJson(objConfig.storage.path, {last_block: objCacheData.last_block, events: {Connection: newConnection}});
         }).catch(console.log);
       }, 5000);
