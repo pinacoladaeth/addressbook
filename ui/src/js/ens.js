@@ -1,9 +1,9 @@
-const namehash = require('eth-ens-namehash');
-const Web3 = require('web3');
+const namehash = require('eth-ens-namehash')
+const Web3 = require('web3')
 
-const provider = new Web3.providers.HttpProvider('https://ropsten.infura.io');
-const web3 = new Web3(provider);
-​
+const provider = new Web3.providers.HttpProvider('https://ropsten.infura.io')
+const web3 = new Web3(provider)
+
 const contractABI = [{
     "anonymous": false,
     "inputs": [{"indexed": false, "name": "from", "type": "address"}, {
@@ -102,13 +102,13 @@ const contractABI = [{
     "stateMutability": "view",
     "type": "function"
 }]
-const contractAddr = '0x7150ac3542f7198effb1a9fdb19323b11a5e6d54';
-const contract = new web3.eth.Contract(contractABI, contractAddr);
-​
+const contractAddr = '0x7150ac3542f7198effb1a9fdb19323b11a5e6d54'
+const contract = new web3.eth.Contract(contractABI, contractAddr)
+
 const register = async (ensDomain, address) => {
-    const nameHash = namehash.hash(ensDomain);
+    const nameHash = namehash.hash(ensDomain)
     try {
-        await contract.methods.registerFriend(nameHash, address).send({from: '0x70cd64a912ce15728a1136882637b4c2ba0d5d86'});
+        await contract.methods.registerFriend(nameHash, address).send({from: '0x70cd64a912ce15728a1136882637b4c2ba0d5d86'})
     } catch (e) {
         console.log(e)
     }

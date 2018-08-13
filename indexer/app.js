@@ -6,12 +6,12 @@ let objConfig = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 const server = require('server');
 const { get, post } = server.router;
 const IPFS = require('ipfs-mini');
-const ipfs = new IPFS({ 
-    host: objConfig.ipfs.node, 
-    port: objConfig.ipfs.port, 
-    protocol: objConfig.ipfs.protocol 
+const ipfs = new IPFS({
+    host: objConfig.ipfs.node,
+    port: objConfig.ipfs.port,
+    protocol: objConfig.ipfs.protocol
   });
- 
+
 // Launch server with options and a couple of routes
 server({ port: 8080, security: { csrf: false } }, [
   get('/user/:address/followers', ctx => {
@@ -20,12 +20,12 @@ server({ port: 8080, security: { csrf: false } }, [
 
     if(strData.length === 0) {
         return {
-            "followers":[]
+            followers:[]
         };
     }
 
     let objCacheData = JSON.parse(strData);
-    let arrFollowers = [];
+    const arrFollowers = []
     for (var key in objCacheData.events.Connection) {
         if (objCacheData.events.Connection.hasOwnProperty(key)) {
             if(objCacheData.events.Connection[key][0] === ctx.params.address) {
@@ -35,7 +35,7 @@ server({ port: 8080, security: { csrf: false } }, [
     }
 
     return {
-        "followers": arrFollowers
+        followers: arrFollowers
     };
   }),
   get('/user/:address/following', ctx => {
@@ -44,62 +44,59 @@ server({ port: 8080, security: { csrf: false } }, [
 
     if(strData.length === 0) {
         return {
-            "following":[]
+            following: []
         };
     }
 
     let objCacheData = JSON.parse(strData);
     if(ctx.params.address in objCacheData.events.Connection) {
         return {
-            "following": objCacheData.events.Connection[ctx.params.address]
+            following: objCacheData.events.Connection[ctx.params.address]
         };
     }
 
     return {
-        "following":[]
+        following: []
     };
   }),
   get('/user/:address', ctx => {
       // Gets a specified users details
 
       // @todo - query the smart contract and ipfs for this
+      const address = ctx.params.address
       return {
-          "ens_domain": "",
-          "public_key": ctx.params.address,
-          "time": "",
-          "details": {
-              "twitter": "",
-              "picture": "",
-              "website": ""
+          ens_domain: `${address.slice(20, 30)}.eth`,
+          public_key: address,
+          time: (new Date()).toString(),
+          details: {
+              twitter: `@${address.slice(20, 30)}`,
+              website: `${address.slice(20, 30)}.com`
           }
       };
   }),
-  get('/user', ctx => {
+  get('/user', async ctx => {
       // Returns a list of all the users
       // This is a list of a user who have trusted themselves
 
-      let strData = fs.readFileSync(objConfig.storage.path); 
+      let strData = fs.readFileSync(objConfig.storage.path);
 
       if(strData.length === 0) {
         return {
-            "users":[]
+            users: []
         };
       }
 
       let objCacheData = JSON.parse(strData);
-      let arrUsers = [];
-      for (var key in objCacheData.events.Connection) {
-          if (objCacheData.events.Connection.hasOwnProperty(key)) {
-              objCacheData.events.Connection[key].forEach(element => {
-                  if(element === key) {
-                      arrUsers.push(key);
-                  }
-              });
-          }
-      }
-  
+      let arrUsers = Object.keys(objCacheData.events.Connection)
+          .reduce((acc, connection) => {
+              if (objCacheData.events.Connection[connection].includes(connection)) {
+                  acc.push(connection);
+              }
+              return acc
+          }, []);
+
       return {
-          "users": arrUsers
+          users: arrUsers
       };
   }),
   post('/ipfs/upload',async ctx => {
@@ -109,7 +106,7 @@ server({ port: 8080, security: { csrf: false } }, [
           JSON.parse(ctx.data);
       } catch (e) {
           return {
-              "error": "Invalid JSON in postbody"
+              error: 'Invalid JSON in postbody'
           }
       }
 
@@ -119,16 +116,16 @@ server({ port: 8080, security: { csrf: false } }, [
       catch(e) {
           console.log(e)
         return {
-            "error": e
+            error: e
         }
       }
 
       return {
-          "hash": _hash
+          hash: _hash
       }
 
   })
-  
+
 ]);
 
 function ipfsAddJson (obj) {

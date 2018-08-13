@@ -1,6 +1,6 @@
 const request = require('request-promise-native')
 
-const url = 'http://107.170.235.167:8080'
+const url = 'http://localhost:8080'
 
 const getUrl = (path) => `${url}${path}`
 
@@ -16,10 +16,7 @@ const following = async (address) => {
 
 const infos = async (address) => {
     const html = await request.get(getUrl(`/user/${address}`))
-    const info = JSON.parse(html)
-    info.ens_domain = 'test.eth'
-    delete info.details.picture
-    return info
+    return JSON.parse(html)
 }
 
 const users = async () => {

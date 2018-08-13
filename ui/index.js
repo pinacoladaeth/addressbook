@@ -2,8 +2,8 @@ window.Web3 = require('web3')
 window.web3 = new Web3(window.web3.currentProvider)
 const api = require('./src/js/api')
 const create = require('./src/js/create')
-//const ens = require('./src/js/ens')
-const ens = {register: () => {}}
+const ens = require('./src/js/ens')
+// const ens = {register: () => {}}
 
 const checkFormValidity = () => {
     const form = document.querySelector('form');
@@ -54,15 +54,15 @@ const initAddressBook = async () => {
         acc[user.public_key] = user
         return acc
     }, {})
-    users = Object.keys(users).map((key, index) => {
-        const user = users[key]
-        user.ens_domain = `${''.padEnd(index+1, 'a')}.eth`
-        user.details.twitter = '@coucou'
-        user.details.website = 'perdu.com'
-        user.time = (new Date()).toString()
-        delete user.details.picture
-        return user
-    })
+    // users = Object.keys(users).map((key, index) => {
+    //     const user = users[key]
+    //     user.ens_domain = `${''.padEnd(index+1, 'a')}.eth`
+    //     user.details.twitter = '@coucou'
+    //     user.details.website = 'perdu.com'
+    //     user.time = (new Date()).toString()
+    //     delete user.details.picture
+    //     return user
+    // })
 
     search.oninput = () => {
         const cards = addressbookSection.querySelector('.cards')
