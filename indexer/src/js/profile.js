@@ -27,7 +27,7 @@ const getProfile = async (address) => {
 }
 
 const getIpfsData = (_hash) => {
-    ipfs.cat(_hash, (err, result) => {
+    ipfs.catJSON(_hash, (err, result) => {
         if(err) return '';
         return result;
     });
