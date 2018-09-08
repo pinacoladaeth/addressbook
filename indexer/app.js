@@ -4,6 +4,7 @@ const fs = require('fs-extra');
 const ini = require('ini');
 let objConfig = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 const server = require('server');
+const web3 = require('web3');
 const { get, post } = server.router;
 const IPFS = require('ipfs-mini');
 const ipfs = new IPFS({
@@ -11,6 +12,7 @@ const ipfs = new IPFS({
     port: objConfig.ipfs.port,
     protocol: objConfig.ipfs.protocol
   });
+const profile = require('./src/js/profile.js');
 
 // Launch server with options and a couple of routes
 server({ port: 8080, security: { csrf: false } }, [
@@ -59,10 +61,69 @@ server({ port: 8080, security: { csrf: false } }, [
         following: []
     };
   }),
-  get('/user/:address', ctx => {
+  get('/user/:address', async ctx => {
+      let addr = ctx.params.address;
       // Gets a specified users details
 
-      // @todo - query the smart contract and ipfs for this
+      // Check the cache data to see if we have cached the ipfs data
+      let strData = fs.readFileSync(objConfig.storage.ipfs);
+      let objCacheData = {};
+      // There's some data cached
+      if(strData.length > 0) {
+          objCacheData = JSON.parse(strData);
+      }
+
+      let objAddrCacheData
+      // Check the cache for a key
+      if(addr in objCacheData) {
+          objAddrCacheData = objCacheData[addr];
+          // Get the ipfs hash from the contract
+          let ipfshash = '';
+          try {
+              ipfshash = await getProfile(addr)
+              if(typeof ipfshash === 'undefined') {
+                  ipfshash = '';
+              }
+          } catch(e) {
+              console.log(e);
+          }
+          // Now check the ipfs hashes match in the contract and the cache
+          if(ipfshash.length > 0 && ipfshash !== objAddrCacheData.hash) {
+            console.log("Hashes do not match. Recaching data");
+            // They don't match, so recache the data
+            let ipfsdata = profile.getIpfsData(ipfshash);
+            objCacheData[addr].hash = ipfsdata;
+            objCacheData[addr].data = JSON.parse(ipfsdata);
+            fs.writeJson(objConfig.storage.ipfs, objCacheData);
+            
+            return  ipfsdata;
+          }
+      }  else {
+          objCacheData[addr] = {
+              hash: '',
+              data: {}
+          };
+
+          // See if the user has a ipfs hash on the contract
+          let ipfshash = '';
+          try {
+              ipfshash = await getProfile(addr)
+              if(typeof ipfshash === 'undefined') {
+                  ipfshash = '';
+              }
+          } catch(e) {
+              ipfshash = '';
+          }
+
+          if(ipfshash.length > 0) {
+              let ipfsdata = profile.getIpfsData(ipfshash);
+              objCacheData[addr].hash = ipfsdata;
+              objCacheData[addr].data = JSON.parse(ipfsdata);
+          }
+          fs.writeJson(objConfig.storage.ipfs, objCacheData);
+      }
+
+      // Default return
       const address = ctx.params.address
       return {
           ens_domain: `${address.slice(20, 30)}.eth`,
@@ -127,6 +188,7 @@ server({ port: 8080, security: { csrf: false } }, [
   })
 
 ]);
+console.log("Server started.");
 
 function ipfsAddJson (obj) {
     return new Promise (function (resolve, reject){
@@ -136,4 +198,10 @@ function ipfsAddJson (obj) {
             resolve(res);
         })
     })
+}
+
+function getProfile (addr) {
+    return new Promise(function(resolve, reject) {
+        resolve(profile.getProfile(addr));
+    });
 }
