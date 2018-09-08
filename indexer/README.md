@@ -62,6 +62,9 @@ Example output:
 
 This returns a JSON object containing the user details. Keys are consistant (except in `details`), but values may be blank.
 
+This method will also check the ipfs hash (via `getProfile()`) and if it doesn't match what is in the cache file (`./data/ipfs.json`) it will fetch the contents from an ipfs node and cache it.
+
+
 Example output: 
 
 ```json
