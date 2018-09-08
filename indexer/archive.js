@@ -43,7 +43,7 @@ fs.ensureFile(objConfig.storage.path, err => {
         }
       };      
       intStartBlock = objCacheData.last_block;
-      }
+    }
 
     log(chalk.blue("INFO:") + " Starting to watch from block "+ intStartBlock);
 
