@@ -20,6 +20,14 @@ const getProfile = async (address) => {
     }
 }
 
+const getIpfsData = (_hash) => {
+    ipfs.cat(_hash, (err, result) => {
+        if(err) return '';
+        return result;
+    });
+}
+
 module.exports = {
-    getProfile: getProfile
+    getProfile: getProfile,
+    getIpfsData: getIpfsData
 }
