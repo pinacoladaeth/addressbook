@@ -4,6 +4,7 @@ const fs = require('fs-extra');
 const ini = require('ini');
 let objConfig = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 const server = require('server');
+const web3 = require('web3');
 const { get, post } = server.router;
 const IPFS = require('ipfs-mini');
 const ipfs = new IPFS({
@@ -11,6 +12,7 @@ const ipfs = new IPFS({
     port: objConfig.ipfs.port,
     protocol: objConfig.ipfs.protocol
   });
+const profile = require('./src/js/profile.js');
 
 // Launch server with options and a couple of routes
 server({ port: 8080, security: { csrf: false } }, [
@@ -59,10 +61,40 @@ server({ port: 8080, security: { csrf: false } }, [
         following: []
     };
   }),
-  get('/user/:address', ctx => {
+  get('/user/:address', async ctx => {
       // Gets a specified users details
 
-      // @todo - query the smart contract and ipfs for this
+      // Check the cache data to see if we have cached the ipfs data
+      let strData = fs.readFileSync(objConfig.storage.ipfs);
+
+      // No data cached
+      if(strData.length > 0) {
+          let objCacheData = JSON.parse(strData);
+          // Check the cache for a key
+          if(ctx.params.address in objCacheData) {
+              // Get the ipfs hash from the contract
+              let ipfshash = '';
+              try {
+                  ipfshash = await getProfile(ctx.params.address)
+                  if(typeof ipfshash === 'undefined') {
+                      ipfshash = '';
+                  }
+              } catch(e) {
+                  console.log(e);
+              }
+
+              // Now check the ipfs hashes match in the contract and the cache
+              if(ipfshash.length > 0 && ipfshash !== objCacheData[ctx.params.address]) {
+                // They don't match, so recache the data
+                let ipfsdata = profile.getIpfsData(ipfshash);
+                objCacheData[ctx.params.address] = JSON.parse(ipfsdata);
+
+                return  ipfsdata;
+              }
+          }            
+      }
+
+      // Default return
       const address = ctx.params.address
       return {
           ens_domain: `${address.slice(20, 30)}.eth`,
@@ -127,6 +159,7 @@ server({ port: 8080, security: { csrf: false } }, [
   })
 
 ]);
+console.log("Server started.");
 
 function ipfsAddJson (obj) {
     return new Promise (function (resolve, reject){
@@ -136,4 +169,10 @@ function ipfsAddJson (obj) {
             resolve(res);
         })
     })
+}
+
+function getProfile (addr) {
+    return new Promise(function(resolve, reject) {
+        resolve(profile.getProfile(addr));
+    });
 }
