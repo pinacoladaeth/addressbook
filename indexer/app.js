@@ -62,20 +62,21 @@ server({ port: 8080, security: { csrf: false } }, [
     };
   }),
   get('/user/:address', async ctx => {
+      let addr = ctx.params.address;
       // Gets a specified users details
 
       // Check the cache data to see if we have cached the ipfs data
       let strData = fs.readFileSync(objConfig.storage.ipfs);
 
-      // No data cached
+      // There's some data cached
       if(strData.length > 0) {
           let objCacheData = JSON.parse(strData);
           // Check the cache for a key
-          if(ctx.params.address in objCacheData) {
+          if(addr in objCacheData) {
               // Get the ipfs hash from the contract
               let ipfshash = '';
               try {
-                  ipfshash = await getProfile(ctx.params.address)
+                  ipfshash = await getProfile(addr)
                   if(typeof ipfshash === 'undefined') {
                       ipfshash = '';
                   }
@@ -84,14 +85,23 @@ server({ port: 8080, security: { csrf: false } }, [
               }
 
               // Now check the ipfs hashes match in the contract and the cache
-              if(ipfshash.length > 0 && ipfshash !== objCacheData[ctx.params.address]) {
+              if(ipfshash.length > 0 && ipfshash !== objCacheData[addr].hash) {
+                console.log("Hashes do not match. Recaching data");
                 // They don't match, so recache the data
                 let ipfsdata = profile.getIpfsData(ipfshash);
-                objCacheData[ctx.params.address] = JSON.parse(ipfsdata);
+                objCacheData[addr].hash = ipfsdata;
+                objCacheData[addr].data = JSON.parse(ipfsdata);
 
                 return  ipfsdata;
               }
           }            
+      } else {
+        let objCacheData = {};
+        objCacheData[addr] = {
+            hash: '',
+            data: {}
+        };
+        fs.writeJson(objConfig.storage.ipfs, objCacheData);
       }
 
       // Default return
