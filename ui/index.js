@@ -26,6 +26,21 @@ const checkEthNetwork = () => {
     }, 1000)
 }
 
+const checkForWeb3Account = () => {
+    setInterval(()=>{
+        window.web3.eth.getAccounts().then((acc) => {
+            if(typeof acc === 'undefined' || acc.length === 0) {
+                document.querySelector("#wrongnetwork").style.display = "inline";
+                document.querySelector("#wrongnetwork").innerText = "Please unlock your web3 client";
+                document.querySelectorAll("input").forEach((a)=>{a.setAttribute("disabled","");});
+            } else {
+                document.querySelector("#wrongnetwork").style.display = "none";
+                document.querySelectorAll("input").forEach((a)=>{a.removeAttribute("disabled");});
+            }
+        })
+    })
+}
+
 const checkFormValidity = () => {
     const form = document.querySelector('form');
     const validation = form.querySelector('input[type=submit]');
@@ -187,6 +202,7 @@ const init = () => {
     initAddressBook()
     initProfile()
     checkEthNetwork()
+    checkForWeb3Account()
 }
 
 const accessProfile = async (address) => {
