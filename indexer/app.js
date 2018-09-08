@@ -11,10 +11,32 @@ const ipfs = new IPFS({
     port: objConfig.ipfs.port,
     protocol: objConfig.ipfs.protocol
   });
+  const { header } = server.reply;  // OR server.reply;
 
-// Launch server with options and a couple of routes
-server({ port: 8080, security: { csrf: false } }, [
-  get('/user/:address/followers', ctx => {
+  let _environment = process.env.NODE_ENV || 'development';
+  let cors = [];
+  
+  switch(_environment.toLowerCase()) {
+      case 'production' :
+          cors = [
+              ctx => header("Access-Control-Allow-Origin", "localhost"),
+              ctx => header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept"),
+              ctx => ctx.method.toLowerCase() === 'options' ? 200 : false
+          ];
+      break;
+      case 'development' :
+      default :
+          cors = [
+              ctx => header("Access-Control-Allow-Origin", "*"),
+              ctx => header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept"),
+              ctx => ctx.method.toLowerCase() === 'options' ? 200 : false
+          ];      
+      break;
+  }
+  
+  // Launch server with options and a couple of routes
+  server({ port: 8080, security: false}, cors, [ //Forgive the security:false pls&thx
+    get('/user/:address/followers', ctx => {
     // Gets the user followers
     let strData = fs.readFileSync(objConfig.storage.path);
 
