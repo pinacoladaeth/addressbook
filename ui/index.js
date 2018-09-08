@@ -1,9 +1,7 @@
 window.Web3 = require('web3')
-window.web3 = new Web3(window.web3.currentProvider)
 const api = require('./src/js/api')
 const create = require('./src/js/create')
 const ens = require('./src/js/ens')
-// const ens = {register: () => {}}
 
 const checkEthNetwork = () => {
     setInterval(()=>{
@@ -73,9 +71,12 @@ const initTabs = () => {
 
 const initRegistration = () => {
     const registerButton = document.querySelector('#registerButton')
-    registerButton.onclick = async () => {
+    registerButton.onclick = async (event) => {
+        const ensAddress = document.querySelector('#ensRegisterInput').value
+        console.log(event.target)
         if (checkFormValidity()) {
-            alert('coucou')
+            console.log(ensAddress)
+            ens.register(ensAddress, '0x647915afd2617cf523c3e74e618cebbe7f88181f')
         }
     }
 }
@@ -217,4 +218,7 @@ const main = () => {
     init()
 }
 
-main()
+window.addEventListener('load', function() {
+    window.web3 = new Web3(window.web3.currentProvider)
+    main()
+})

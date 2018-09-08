@@ -1,0 +1,14 @@
+{
+  "name": "addressbook",
+  "version": "0.0.3",
+  "devDependencies": {
+    "eth-ens-namehash": "^2.0.8",
+    "lerna": "^3.3.0",
+    "web3": "^1.0.0-beta.36"
+  },
+  "scripts": {
+    "testchain": "lerna run --scope test start",
+    "dev": "lerna run dev --parallel",
+    "install": "lerna bootstrap --"
+  }
+}

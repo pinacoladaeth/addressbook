@@ -1,0 +1,9 @@
+{
+  "packages": [
+    "contract",
+    "indexer",
+    "test",
+    "ui"
+  ],
+  "version": "0.0.3"
+}
