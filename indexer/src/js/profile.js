@@ -2,6 +2,12 @@ const web3 = require('web3')
 const ini = require('ini')
 const fs = require('fs')
 let objConfig = ini.parse(fs.readFileSync('./config.ini', 'utf-8'))
+const IPFS = require('ipfs-mini');
+const ipfs = new IPFS({
+    host: objConfig.ipfs.node,
+    port: objConfig.ipfs.port,
+    protocol: objConfig.ipfs.protocol
+  });
 let objProvider;
 
 if(objConfig.web3.provider_type === 'http') {
