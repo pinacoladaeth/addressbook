@@ -13,3 +13,14 @@
 .m-0 {
     margin: 0 !important;
 }
+
+
+#wrongnetwork {
+    background: red;
+    color: #fff;
+    padding: 5px;
+    display: none;
+    position: absolute;
+    top: 5%;
+    left: 5%;
+}

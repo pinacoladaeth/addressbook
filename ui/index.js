@@ -5,6 +5,27 @@ const create = require('./src/js/create')
 const ens = require('./src/js/ens')
 // const ens = {register: () => {}}
 
+const checkEthNetwork = () => {
+    setInterval(()=>{
+        window.web3.eth.net.getId().then((nid) => {
+            switch(nid){
+                case 1 : //mainnet
+                case 2 : //testnet
+                case 4 : //testnet
+                default:
+                    document.querySelector('#wrongnetwork').style.display = "inline";
+                    document.querySelector("#wrongnetwork").innerText = "Please switch network to Ropsten";
+                    document.querySelectorAll("input").forEach((a)=>{a.setAttribute("disabled","");});
+                    break;
+                case 3 : //ropsten
+                    document.querySelector("#wrongnetwork").style.display = "none";
+                    document.querySelectorAll("input").forEach((a)=>{a.removeAttribute("disabled");});
+                    break;
+            }
+        })
+    }, 1000)
+}
+
 const checkFormValidity = () => {
     const form = document.querySelector('form');
     const validation = form.querySelector('input[type=submit]');
@@ -165,6 +186,7 @@ const init = () => {
     initRegistration()
     initAddressBook()
     initProfile()
+    checkEthNetwork()
 }
 
 const accessProfile = async (address) => {
