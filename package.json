@@ -12,7 +12,7 @@
     "web3": "^1.0.0-beta.36"
   },
   "scripts": {
-    "testchain": "lerna run --scope test start",
+    "testchain": "lerna run --scope test start --stream",
     "dev": "lerna run dev --parallel",
     "install": "lerna bootstrap --"
   }

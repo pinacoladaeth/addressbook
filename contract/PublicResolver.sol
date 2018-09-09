@@ -75,7 +75,7 @@ contract PublicResolver {
         records[node].content = hash;
         ContentChanged(node, hash);
     }
-    
+
     /**
      * Sets the name associated with an ENS node, for reverse records.
      * May only be called by the owner of that node in the ENS registry.
@@ -98,11 +98,11 @@ contract PublicResolver {
     function setABI(bytes32 node, uint256 contentType, bytes data) public only_owner(node) {
         // Content types must be powers of 2
         require(((contentType - 1) & contentType) == 0);
-        
+
         records[node].abis[contentType] = data;
         ABIChanged(node, contentType);
     }
-    
+
     /**
      * Sets the SECP256k1 public key associated with an ENS node.
      * @param node The ENS node to query

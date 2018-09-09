@@ -26,7 +26,7 @@ contract Pinacolada {
 
 
     function registerFriend( bytes32 _friendNameHash, address _friendAddr) public {
-        address friendAddr = resolver.addr(_friendNameHasxh);
+        address friendAddr = resolver.addr(_friendNameHash);
         if(friendAddr!=_friendAddr) revert();
         addrGraph[msg.sender].push(_friendAddr);
         Connection(msg.sender, _friendAddr);

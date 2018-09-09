@@ -26,7 +26,7 @@ contract ReverseRegistrar {
             oldRegistrar.claim(msg.sender);
         }
     }
-    
+
     /**
      * @dev Transfers ownership of the reverse ENS record associated with the
      *      calling account.
