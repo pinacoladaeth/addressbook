@@ -28,3 +28,18 @@
     top: 5%;
     left: 5%;
 }
+
+#txresult {
+    color: #fff;
+    padding: 5px;
+    display: none;
+    position: absolute;
+    top: 5%;
+    left: 5%;
+}
+.badtx {
+    background: red;
+}
+.goodtx {
+    background: green;
+}

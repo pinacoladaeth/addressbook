@@ -2,6 +2,8 @@ window.Web3 = require('web3')
 const api = require('./src/js/api')
 const create = require('./src/js/create')
 const ens = require('./src/js/ens')
+const namehash = require('eth-ens-namehash')
+// const ens = {register: () => {}}
 
 const checkEthNetwork = () => {
     setInterval(()=>{
@@ -24,7 +26,7 @@ const checkEthNetwork = () => {
     }, 1000)
 }
 
-const checkForWeb3Account = () => {
+const checkForWeb3Account = () => {   
     setInterval(()=>{
         window.web3.eth.getAccounts().then((acc) => {
             if(typeof acc === 'undefined' || acc.length === 0) {
@@ -36,7 +38,7 @@ const checkForWeb3Account = () => {
                 document.querySelectorAll("input").forEach((a)=>{a.removeAttribute("disabled");});
             }
         })
-    })
+    }, 1000)
 }
 
 const checkFormValidity = () => {
@@ -75,8 +77,137 @@ const initRegistration = () => {
         const ensAddress = document.querySelector('#ensRegisterInput').value
         console.log(event.target)
         if (checkFormValidity()) {
-            console.log(ensAddress)
-            ens.register(ensAddress, '0x647915afd2617cf523c3e74e618cebbe7f88181f')
+            const contractABI = [{
+                "anonymous": false,
+                "inputs": [{"indexed": false, "name": "from", "type": "address"}, {
+                    "indexed": false,
+                    "name": "to",
+                    "type": "address"
+                }],
+                "name": "Connection",
+                "type": "event"
+            }, {
+                "constant": false,
+                "inputs": [{"name": "_friendNameHash", "type": "bytes32"}, {"name": "_friendAddr", "type": "address"}],
+                "name": "registerFriend",
+                "outputs": [],
+                "payable": false,
+                "stateMutability": "nonpayable",
+                "type": "function"
+            }, {
+                "inputs": [{"name": "registryA", "type": "address"}, {
+                    "name": "registrarA",
+                    "type": "address"
+                }, {"name": "resolverA", "type": "address"}, {"name": "reverseRegistrarA", "type": "address"}],
+                "payable": false,
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            }, {
+                "constant": false,
+                "inputs": [{"name": "_nameHash", "type": "bytes32"}, {"name": "_ipfsContentHash", "type": "string"}],
+                "name": "updateProfile",
+                "outputs": [],
+                "payable": false,
+                "stateMutability": "nonpayable",
+                "type": "function"
+            }, {
+                "constant": true,
+                "inputs": [{"name": "", "type": "address"}, {"name": "", "type": "uint256"}],
+                "name": "addrGraph",
+                "outputs": [{"name": "", "type": "address"}],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            }, {
+                "constant": true,
+                "inputs": [{"name": "_addr", "type": "address"}],
+                "name": "getProfile",
+                "outputs": [{"name": "", "type": "string"}],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            }, {
+                "constant": true,
+                "inputs": [{"name": "_person", "type": "address"}],
+                "name": "isMember",
+                "outputs": [{"name": "", "type": "bool"}],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            }, {
+                "constant": true,
+                "inputs": [{"name": "", "type": "address"}],
+                "name": "profile",
+                "outputs": [{"name": "", "type": "string"}],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            }, {
+                "constant": true,
+                "inputs": [],
+                "name": "registrar",
+                "outputs": [{"name": "", "type": "address"}],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            }, {
+                "constant": true,
+                "inputs": [],
+                "name": "registry",
+                "outputs": [{"name": "", "type": "address"}],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            }, {
+                "constant": true,
+                "inputs": [],
+                "name": "resolver",
+                "outputs": [{"name": "", "type": "address"}],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            }, {
+                "constant": true,
+                "inputs": [],
+                "name": "reverseRegistrar",
+                "outputs": [{"name": "", "type": "address"}],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            }]
+            const contractAddr = '0x7150ac3542f7198effb1a9fdb19323b11a5e6d54'
+            const contract = new web3.eth.Contract(contractABI, contractAddr)
+        
+            window.web3.eth.getAccounts().then((acc) => {
+                let strEnsDomain = document.querySelector("#ensRegisterInput").value;
+
+                console.log("Trying to tx for "+ strEnsDomain +" with "+ acc[0]);
+                contract.methods.registerFriend(namehash.hash(strEnsDomain), acc[0]).send({from: acc[0]})
+                .on('transactionHash', function(hash){
+                    document.querySelector("#txresult").style.display = "inline";
+                    document.querySelector("#txresult").classList.remove("badtx");
+                    document.querySelector("#txresult").classList.remove("goodtx");
+                    document.querySelector("#txresult").innerText = hash + " has been submitted.";
+                })
+                .on('confirmation', function(confirmationNumber, receipt){
+                    if(receipt.status) {
+                        document.querySelector("#txresult").style.display = "inline";
+                        document.querySelector("#txresult").classList.remove("badtx");
+                        document.querySelector("#txresult").classList.add("goodtx");
+                        document.querySelector("#txresult").innerText = "Welcome to pinacolada";
+                    } else {
+                        document.querySelector("#txresult").style.display = "inline";
+                        document.querySelector("#txresult").classList.remove("goodtx");
+                        document.querySelector("#txresult").classList.add("badtx");
+                        document.querySelector("#txresult").innerText = "Signup failed!";
+                    }
+                })
+                .on('receipt', function(receipt){
+                    console.log("-- receipt");
+                    console.log(receipt);
+                })
+                .on('error', console.log)
+            });
         }
     }
 }
