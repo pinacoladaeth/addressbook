@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.22;
 
 import "./ENS.sol";
 import "./TemporaryHashRegistrar.sol";
@@ -17,7 +17,7 @@ contract Pinacolada {
 
 
 
-  function Pinacolada (address registryA, address registrarA, address resolverA, address reverseRegistrarA) public{
+  constructor (address registryA, address registrarA, address resolverA, address reverseRegistrarA) public{
     registry = ENS(registryA);
     registrar = Registrar(registrarA);
     resolver = PublicResolver(resolverA);
@@ -29,7 +29,7 @@ contract Pinacolada {
         address friendAddr = resolver.addr(_friendNameHash);
         if(friendAddr!=_friendAddr) revert();
         addrGraph[msg.sender].push(_friendAddr);
-        Connection(msg.sender, _friendAddr);
+        emit Connection(msg.sender, _friendAddr);
     }
 
     function updateProfile (bytes32 _nameHash, string _ipfsContentHash) public {

@@ -9,6 +9,8 @@ let web3
 let ens
 let resolver
 let registrar
+let reverseRegistrar
+let pinacolada
 
 const contractDirectory = path.join(__dirname, '..', 'contract')
 const contracts = () =>
@@ -55,6 +57,7 @@ const setSubdomain = async (top, sub) => {
     gas: 4700000
   })
   await setResolver(`${sub}.${top}`)
+  console.log(`${sub}.${top}: ${web3.eth.accounts.wallet[0].address}`)
 }
 
 const startServer = () => {
@@ -71,6 +74,8 @@ const start = async () => {
   ens = await deploy(contracts['ENS.sol:ENS'])
   registrar = await deploy(contracts['FIFSRegistrar.sol:FIFSRegistrar'], [ens.options.address, web3.utils.toHex(0)])
   resolver = await deploy(contracts['PublicResolver.sol:PublicResolver'], [ens.options.address])
+  reverseRegistrar = await deploy(contracts['ReverseRegistrar.sol:ReverseRegistrar'], [ens.options.address, resolver.options.address])
+  pinacolada = await deploy(contracts['Pinacolada.sol:Pinacolada'], [ens.options.address, registrar.options.address, resolver.options.address, reverseRegistrar.options.address])
   await ens.methods.setOwner(web3.utils.toHex(0), registrar.options.address).send({
     from: web3.eth.accounts.wallet[0].address,
     gas: 4700000
@@ -83,7 +88,9 @@ const start = async () => {
   return {
     ens: ens.options.address,
     registrar: registrar.options.address,
-    resolver: resolver.options.address
+    resolver: resolver.options.address,
+    reverseRegistrar: reverseRegistrar.options.address,
+    pinacolada: pinacolada.options.address
   }
 }
 

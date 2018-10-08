@@ -1,4 +1,4 @@
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.22;
 
 import "./ENS.sol";
 import "./ReverseRegistrar.sol";
@@ -35,7 +35,7 @@ contract DefaultReverseResolver is PublicResolver {
      * @dev Constructor
      * @param ensAddr The address of the ENS registry.
      */
-    function DefaultReverseResolver(ENS ensAddr) public {
+    constructor (ENS ensAddr) public {
         ens = ensAddr;
 
         // Assign ownership of the reverse record to our deployer

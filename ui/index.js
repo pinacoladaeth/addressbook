@@ -6,36 +6,54 @@ const namehash = require('eth-ens-namehash')
 // const ens = {register: () => {}}
 
 const checkEthNetwork = () => {
-    setInterval(()=>{
+    setInterval(() => {
         window.web3.eth.net.getId().then((nid) => {
-            switch(nid){
-                case 1 : //mainnet
-                case 2 : //testnet
-                case 4 : //testnet
+            if (nid > 1000 * 1000) {
+                document.querySelector("#wrongnetwork").style.display = "none";
+                document.querySelectorAll("input").forEach((a) => {
+                    a.removeAttribute("disabled");
+                });
+            } else {
+            switch (nid) {
+                case 3: //ropsten
+                case 1337: //localhost
+                    document.querySelector("#wrongnetwork").style.display = "none";
+                    document.querySelectorAll("input").forEach((a) => {
+                        a.removeAttribute("disabled");
+                    });
+                    break;
+                case 1: //mainnet
+                case 2: //testnet
+                case 4: //testnet
                 default:
+                    console.log(nid)
                     document.querySelector('#wrongnetwork').style.display = "inline";
                     document.querySelector("#wrongnetwork").innerText = "Please switch network to Ropsten";
-                    document.querySelectorAll("input").forEach((a)=>{a.setAttribute("disabled","");});
-                    break;
-                case 3 : //ropsten
-                    document.querySelector("#wrongnetwork").style.display = "none";
-                    document.querySelectorAll("input").forEach((a)=>{a.removeAttribute("disabled");});
-                    break;
+                    document.querySelectorAll("input").forEach((a) => {
+                        a.setAttribute("disabled", "");
+                    });
+                    if (nid < 1000 * 1000)
+                        break;
+            }
             }
         })
     }, 1000)
 }
 
-const checkForWeb3Account = () => {   
-    setInterval(()=>{
+const checkForWeb3Account = () => {
+    setInterval(() => {
         window.web3.eth.getAccounts().then((acc) => {
-            if(typeof acc === 'undefined' || acc.length === 0) {
+            if (typeof acc === 'undefined' || acc.length === 0) {
                 document.querySelector("#wrongnetwork").style.display = "inline";
                 document.querySelector("#wrongnetwork").innerText = "Please unlock your web3 client";
-                document.querySelectorAll("input").forEach((a)=>{a.setAttribute("disabled","");});
+                document.querySelectorAll("input").forEach((a) => {
+                    a.setAttribute("disabled", "");
+                });
             } else {
                 document.querySelector("#wrongnetwork").style.display = "none";
-                document.querySelectorAll("input").forEach((a)=>{a.removeAttribute("disabled");});
+                document.querySelectorAll("input").forEach((a) => {
+                    a.removeAttribute("disabled");
+                });
             }
         })
     }, 1000)
@@ -175,38 +193,38 @@ const initRegistration = () => {
                 "stateMutability": "view",
                 "type": "function"
             }]
-            const contractAddr = '0x7150ac3542f7198effb1a9fdb19323b11a5e6d54'
+            const contractAddr = '0x8f0483125FCb9aaAEFA9209D8E9d7b9C8B9Fb90F'
             const contract = new web3.eth.Contract(contractABI, contractAddr)
-        
+
             window.web3.eth.getAccounts().then((acc) => {
                 let strEnsDomain = document.querySelector("#ensRegisterInput").value;
 
-                console.log("Trying to tx for "+ strEnsDomain +" with "+ acc[0]);
+                console.log("Trying to tx for " + strEnsDomain + " with " + acc[0]);
                 contract.methods.registerFriend(namehash.hash(strEnsDomain), acc[0]).send({from: acc[0]})
-                .on('transactionHash', function(hash){
-                    document.querySelector("#txresult").style.display = "inline";
-                    document.querySelector("#txresult").classList.remove("badtx");
-                    document.querySelector("#txresult").classList.remove("goodtx");
-                    document.querySelector("#txresult").innerText = hash + " has been submitted.";
-                })
-                .on('confirmation', function(confirmationNumber, receipt){
-                    if(receipt.status) {
+                    .on('transactionHash', function (hash) {
                         document.querySelector("#txresult").style.display = "inline";
                         document.querySelector("#txresult").classList.remove("badtx");
-                        document.querySelector("#txresult").classList.add("goodtx");
-                        document.querySelector("#txresult").innerText = "Welcome to pinacolada";
-                    } else {
-                        document.querySelector("#txresult").style.display = "inline";
                         document.querySelector("#txresult").classList.remove("goodtx");
-                        document.querySelector("#txresult").classList.add("badtx");
-                        document.querySelector("#txresult").innerText = "Signup failed!";
-                    }
-                })
-                .on('receipt', function(receipt){
-                    console.log("-- receipt");
-                    console.log(receipt);
-                })
-                .on('error', console.log)
+                        document.querySelector("#txresult").innerText = hash + " has been submitted.";
+                    })
+                    .on('confirmation', function (confirmationNumber, receipt) {
+                        if (receipt.status) {
+                            document.querySelector("#txresult").style.display = "inline";
+                            document.querySelector("#txresult").classList.remove("badtx");
+                            document.querySelector("#txresult").classList.add("goodtx");
+                            document.querySelector("#txresult").innerText = "Welcome to pinacolada";
+                        } else {
+                            document.querySelector("#txresult").style.display = "inline";
+                            document.querySelector("#txresult").classList.remove("goodtx");
+                            document.querySelector("#txresult").classList.add("badtx");
+                            document.querySelector("#txresult").innerText = "Signup failed!";
+                        }
+                    })
+                    .on('receipt', function (receipt) {
+                        console.log("-- receipt");
+                        console.log(receipt);
+                    })
+                    .on('error', console.log)
             });
         }
     }
@@ -325,7 +343,9 @@ const initProfile = async (user) => {
     const followersFollowing = profileSection.querySelector('.followersFollowing')
     followersFollowing.innerHTML = ''
     Array.from(await create.followingFollowersCards(user.public_key))
-        .map(el => { followersFollowing.appendChild(el) })
+        .map(el => {
+            followersFollowing.appendChild(el)
+        })
 }
 
 const init = () => {
@@ -349,7 +369,7 @@ const main = () => {
     init()
 }
 
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     window.web3 = new Web3(window.web3.currentProvider)
     main()
 })

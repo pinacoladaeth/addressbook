@@ -8,7 +8,9 @@ const server = ganache.server({
     balance: 0x200000000000000000000000000000000000000000000000000000000000000,
     secretKey: privateKey
   }],
-  port: port
+  port: port,
+  "network-id": 1337,
+  deterministic: true
 })
 
 module.exports = {

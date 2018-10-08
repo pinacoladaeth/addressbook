@@ -104,7 +104,8 @@ const contractABI = [{
     "stateMutability": "view",
     "type": "function"
 }]
-const contractAddr = process.env.ENS_CONTRACT_ADDRESS
+// const contractAddr = process.env.ENS_CONTRACT_ADDRESS
+const contractAddr = '0x8CdaF0CD259887258Bc13a92C0a6dA92698644C0'
 const contract = new web3.eth.Contract(contractABI, contractAddr)
 
 const register = async (ensDomain, address) => {
