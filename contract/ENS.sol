@@ -1,4 +1,4 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.4.22;
 
 /**
  * The ENS registry contract.
@@ -26,15 +26,15 @@ contract ENS {
 
     // Permits modifications only by the owner of the specified node.
     modifier only_owner(bytes32 node) {
-        if (records[node].owner != msg.sender) throw;
+        require(records[node].owner == msg.sender);
         _;
     }
 
     /**
      * Constructs a new ENS registrar.
      */
-    function ENS() public {
-        records[0].owner = msg.sender;
+    constructor() public {
+        records[bytes32(0)].owner = msg.sender;
     }
 
     /**
@@ -65,7 +65,7 @@ contract ENS {
      * @param owner The address of the new owner.
      */
     function setOwner(bytes32 node, address owner) public only_owner(node) {
-        Transfer(node, owner);
+        emit Transfer(node, owner);
         records[node].owner = owner;
     }
 
@@ -77,8 +77,8 @@ contract ENS {
      * @param owner The address of the new owner.
      */
     function setSubnodeOwner(bytes32 node, bytes32 label, address owner) public only_owner(node) {
-        var subnode = sha3(node, label);
-        NewOwner(node, label, owner);
+        bytes32 subnode = keccak256(abi.encodePacked(node, label));
+        emit NewOwner(node, label, owner);
         records[subnode].owner = owner;
     }
 
@@ -88,7 +88,7 @@ contract ENS {
      * @param resolver The address of the resolver.
      */
     function setResolver(bytes32 node, address resolver) public only_owner(node) {
-        NewResolver(node, resolver);
+        emit NewResolver(node, resolver);
         records[node].resolver = resolver;
     }
 
@@ -98,7 +98,7 @@ contract ENS {
      * @param ttl The TTL in seconds.
      */
     function setTTL(bytes32 node, uint64 ttl) public only_owner(node) {
-        NewTTL(node, ttl);
+        emit NewTTL(node, ttl);
         records[node].ttl = ttl;
     }
 }

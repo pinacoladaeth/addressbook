@@ -1,0 +1,19 @@
+{
+  "name": "addressbook",
+  "version": "0.0.3",
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "eth-ens-namehash": "^2.0.8",
+    "lerna": "^3.3.0",
+    "web3": "^1.0.0-beta.36"
+  },
+  "scripts": {
+    "testchain": "lerna run --scope test start --stream",
+    "dev": "lerna run dev --parallel",
+    "install": "lerna bootstrap --"
+  }
+}

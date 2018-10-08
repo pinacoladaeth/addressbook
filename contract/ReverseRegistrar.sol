@@ -1,4 +1,4 @@
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.22;
 
 import "./ENS.sol";
 import "./DefaultReverseResolver.sol";
@@ -16,7 +16,7 @@ contract ReverseRegistrar {
      * @param ensAddr The address of the ENS registry.
      * @param resolverAddr The address of the default reverse resolver.
      */
-    function ReverseRegistrar(ENS ensAddr, PublicResolver resolverAddr) public {
+    constructor (ENS ensAddr, PublicResolver resolverAddr) public {
         ens = ensAddr;
         defaultResolver = resolverAddr;
 
@@ -26,7 +26,7 @@ contract ReverseRegistrar {
             oldRegistrar.claim(msg.sender);
         }
     }
-    
+
     /**
      * @dev Transfers ownership of the reverse ENS record associated with the
      *      calling account.
@@ -45,9 +45,9 @@ contract ReverseRegistrar {
      * @return The ENS node hash of the reverse record.
      */
     function claimWithResolver(address owner, address resolver) public returns (bytes32) {
-        var label = sha3HexAddress(msg.sender);
-        bytes32 node = keccak256(ADDR_REVERSE_NODE, label);
-        var currentOwner = ens.owner(node);
+        bytes32 label = sha3HexAddress(msg.sender);
+        bytes32 node = keccak256(abi.encodePacked(ADDR_REVERSE_NODE, label));
+        address currentOwner = ens.owner(node);
 
         // Update the resolver if required
         if (resolver != 0 && resolver != ens.resolver(node)) {
@@ -86,7 +86,7 @@ contract ReverseRegistrar {
      * @return The ENS node hash.
      */
     function node(address addr) public view returns (bytes32) {
-        return keccak256(ADDR_REVERSE_NODE, sha3HexAddress(addr));
+        return keccak256(abi.encodePacked(ADDR_REVERSE_NODE, sha3HexAddress(addr)));
     }
 
     /**

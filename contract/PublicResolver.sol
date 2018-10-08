@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.22;
 
 import './ENS.sol';
 
@@ -48,7 +48,7 @@ contract PublicResolver {
      * Constructor.
      * @param ensAddr The ENS registrar contract.
      */
-    function PublicResolver(ENS ensAddr) public {
+    constructor(ENS ensAddr) public {
         ens = ensAddr;
     }
 
@@ -60,7 +60,7 @@ contract PublicResolver {
      */
     function setAddr(bytes32 node, address addr) public only_owner(node) {
         records[node].addr = addr;
-        AddrChanged(node, addr);
+        emit AddrChanged(node, addr);
     }
 
     /**
@@ -73,9 +73,9 @@ contract PublicResolver {
      */
     function setContent(bytes32 node, bytes32 hash) public only_owner(node) {
         records[node].content = hash;
-        ContentChanged(node, hash);
+        emit ContentChanged(node, hash);
     }
-    
+
     /**
      * Sets the name associated with an ENS node, for reverse records.
      * May only be called by the owner of that node in the ENS registry.
@@ -84,7 +84,7 @@ contract PublicResolver {
      */
     function setName(bytes32 node, string name) public only_owner(node) {
         records[node].name = name;
-        NameChanged(node, name);
+        emit NameChanged(node, name);
     }
 
     /**
@@ -98,11 +98,11 @@ contract PublicResolver {
     function setABI(bytes32 node, uint256 contentType, bytes data) public only_owner(node) {
         // Content types must be powers of 2
         require(((contentType - 1) & contentType) == 0);
-        
+
         records[node].abis[contentType] = data;
-        ABIChanged(node, contentType);
+        emit ABIChanged(node, contentType);
     }
-    
+
     /**
      * Sets the SECP256k1 public key associated with an ENS node.
      * @param node The ENS node to query
@@ -111,7 +111,7 @@ contract PublicResolver {
      */
     function setPubkey(bytes32 node, bytes32 x, bytes32 y) public only_owner(node) {
         records[node].pubkey = PublicKey(x, y);
-        PubkeyChanged(node, x, y);
+        emit PubkeyChanged(node, x, y);
     }
 
     /**
@@ -123,7 +123,7 @@ contract PublicResolver {
      */
     function setText(bytes32 node, string key, string value) public only_owner(node) {
         records[node].text[key] = value;
-        TextChanged(node, key, key);
+        emit TextChanged(node, key, key);
     }
 
     /**

@@ -14,6 +14,10 @@
     margin: 0 !important;
 }
 
+.not-clickable {
+    pointer-events: none;
+}
+
 
 #wrongnetwork {
     background: red;
